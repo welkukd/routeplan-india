@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Truck, Smartphone, Zap, Shield, Globe, CheckCircle, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Truck, Smartphone, Zap, Shield, Globe, CheckCircle, ArrowUpRight, QrCode, ChevronRight, MessageSquare } from "lucide-react";
 
 const features = [
   {
@@ -246,6 +246,121 @@ export default function HomePage() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* WhatsApp Onboarding Flow */}
+      <section id="onboarding" className="py-20 sm:py-28 lg:py-32 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-0" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="font-display text-4xl sm:text-5xl font-bold mb-4">
+              Get Started in <span className="text-gradient-gold">2 Minutes</span>
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Scan the QR code or click the button to start onboarding via WhatsApp. No app download required.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-center">
+            {/* QR Code Side */}
+            <div className="glass-strong p-8 md:p-12 rounded-2xl text-center border-amber-500/20">
+              <div className="mb-6">
+                <div className="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mx-auto mb-4">
+                  <QrCode className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <h3 className="font-display text-xl font-bold mb-2">Scan to Start</h3>
+                <p className="text-muted-foreground mb-6">Open WhatsApp and scan this QR code to begin setup</p>
+              </div>
+              <div className="glass p-6 rounded-xl border-amber-500/10 mb-6">
+                <div className="aspect-square w-64 mx-auto mb-4 rounded-lg bg-secondary flex items-center justify-center relative">
+                  <div className="text-center">
+                    <QrCode className="w-24 h-24 text-amber-400 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm text-muted-foreground">QR Code Placeholder</p>
+                    <p className="text-xs text-muted-foreground mt-1">wa.me/91XXXXXXXXXX</p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <a
+                    href="https://wa.me/91XXXXXXXXXX?text=Hi%20RoutePlan%2C%20I%20want%20to%20automate%20my%20delivery%20routing%20via%20WhatsApp."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary px-8 py-3 text-base gap-3 group"
+                  >
+                    <Smartphone className="w-5 h-5" />
+                    Open in WhatsApp
+                    <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </a>
+                  <button
+                    className="btn-outline px-8 py-3 text-base gap-2"
+                    aria-label="Copy WhatsApp link"
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                    Copy Link
+                  </button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                By continuing, you agree to our <a href="#" className="underline hover:text-amber-400">Terms of Service</a> and <a href="#" className="underline hover:text-amber-400">Privacy Policy</a>
+              </p>
+            </div>
+
+            {/* Steps Side */}
+            <div className="space-y-6">
+              <div className="glass p-6 border-amber-500/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center text-primary-foreground font-bold text-lg">
+                    01
+                  </div>
+                  <h3 className="font-display text-xl font-bold">Connect Your Business</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  Scan the QR code or click "Open in WhatsApp". You'll land in a chat with RoutePlan. 
+                  Reply with your business name and type (Dairy, Pharmacy, Bakery, Kirana, or Other).
+                </p>
+              </div>
+
+              <div className="glass p-6 border-amber-500/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center text-primary-foreground font-bold text-lg">
+                    02
+                  </div>
+                  <h3 className="font-display text-xl font-bold">Add Stops & Drivers</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  Send locations via WhatsApp (tap 📎 {'>'} Location) or type addresses. Add driver names, 
+                  phone numbers, and vehicle types. Set delivery time windows per customer.
+                </p>
+              </div>
+
+              <div className="glass p-6 border-amber-500/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center text-primary-foreground font-bold text-lg">
+                    03
+                  </div>
+                  <h3 className="font-display text-xl font-bold">Auto-Dispatch Daily</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
+                  Every morning at 6 AM, optimized routes are sent to drivers on WhatsApp. 
+                  Track live GPS, collect proof of delivery, and auto-generate GST invoices.
+                </p>
+              </div>
+
+              <div className="glass p-6 bg-amber-500/5 border-amber-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <Zap className="w-5 h-5 text-amber-400" />
+                  <h3 className="font-display text-lg font-bold text-amber-300">Free Forever Tier</h3>
+                </div>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-amber-400" /> 1,000 WhatsApp conversations/month</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-amber-400" /> 5 drivers included</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-amber-400" /> Route optimization engine</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-amber-400" /> GST-compliant invoices</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-amber-400" /> Hindi + English support</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
