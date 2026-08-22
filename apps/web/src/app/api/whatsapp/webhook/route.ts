@@ -47,11 +47,11 @@ export async function POST(request: NextRequest) {
       });
 
       // Handle different message types
-      if (msg.type === "text") {
+      if (msg.type === "text" && msg.text) {
         await handleTextMessage(supabase, client, org, from, msg.text.body);
-      } else if (msg.type === "interactive") {
+      } else if (msg.type === "interactive" && msg.interactive) {
         await handleInteractiveMessage(supabase, client, org, from, msg.interactive);
-      } else if (msg.type === "location") {
+      } else if (msg.type === "location" && msg.location) {
         await handleLocationMessage(supabase, client, org, from, msg.location);
       }
     }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { solveVRP, createRouteRequestFromOrders, LocationSchema, VehicleSchema } from "./src/index";
+import { solveVRP, createRouteRequestFromOrders, LocationSchema, VehicleSchema, RouteResponse } from "./index";
 
 describe("VRP Solver", () => {
   const depot = {
@@ -9,6 +9,7 @@ describe("VRP Solver", () => {
     latitude: 19.076,
     longitude: 72.8777,
     demand: 0,
+    serviceTimeMinutes: 0,
     type: "depot" as const,
   };
 
@@ -50,6 +51,7 @@ describe("VRP Solver", () => {
     maxDistanceKm: 50,
     maxDurationMinutes: 480,
     vehicleType: "van" as const,
+    fixedCost: 0,
     costPerKm: 15,
     costPerMinute: 1,
   };
@@ -60,12 +62,14 @@ describe("VRP Solver", () => {
       vehicles: [vehicle],
       options: {
         optimizationGoal: "balanced" as const,
+        considerTraffic: true,
         trafficFactor: 1.3,
+        allowSplitDeliveries: false,
         timeLimitSeconds: 30,
       },
     };
 
-    const result = solveVRP(request);
+    const result: RouteResponse = solveVRP(request);
 
     expect(result.routes.length).toBe(1);
     expect(result.routes[0].stops.length).toBeGreaterThan(2); // depot + customers + return
@@ -84,10 +88,16 @@ describe("VRP Solver", () => {
     const request = {
       locations: [depot, heavyCustomer],
       vehicles: [vehicle],
-      options: { trafficFactor: 1.3 },
+      options: {
+        optimizationGoal: "balanced" as const,
+        considerTraffic: true,
+        trafficFactor: 1.3,
+        allowSplitDeliveries: false,
+        timeLimitSeconds: 30,
+      },
     };
 
-    const result = solveVRP(request);
+    const result: RouteResponse = solveVRP(request);
 
     expect(result.summary.locationsServed).toBe(0);
     expect(result.unassignedLocations.length).toBe(1);

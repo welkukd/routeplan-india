@@ -182,25 +182,25 @@ export class RazorpayClient {
   }
 
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
-    const url = `${RAZORPAY_BASE_URL}${path}`;
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Authorization: this.authHeader,
-    };
+      const url = `${RAZORPAY_BASE_URL}${path}`;
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Authorization: this.authHeader,
+      };
 
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+      });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Razorpay API error: ${response.status} ${error}`);
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Razorpay API error: ${response.status} ${error}`);
+      }
+
+      return response.json() as Promise<T>;
     }
-
-    return response.json();
-  }
 
   // Customers
   async createCustomer(customer: RazorpayCustomer): Promise<{ id: string; entity: string }> {

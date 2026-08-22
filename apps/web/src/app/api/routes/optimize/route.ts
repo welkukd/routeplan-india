@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { solveVRP, createRouteRequestFromOrders, RouteRequestSchema } from "@routeplan/routing";
+import { solveVRP, createRouteRequestFromOrders, RouteRequestSchema, OptimizedRoute } from "@routeplan/routing";
 import { createServerClient } from "@routeplan/db";
 
 export async function POST(request: NextRequest) {
@@ -99,16 +99,19 @@ export async function GET(request: NextRequest) {
     };
 
     const routeRequest = createRouteRequestFromOrders(
-      orders.map((o) => ({
-        id: o.id,
-        customerName: o.customers.name,
-        address: o.customers.address,
-        latitude: o.customers.latitude || depot.latitude,
-        longitude: o.customers.longitude || depot.longitude,
-        weightKg: o.items?.reduce((sum: number, item: any) => sum + (item.weight || 1), 0) || 1,
-        timeWindowStart: o.delivery_window_start ? new Date(o.delivery_window_start).toTimeString().slice(0, 5) : undefined,
-        timeWindowEnd: o.delivery_window_end ? new Date(o.delivery_window_end).toTimeString().slice(0, 5) : undefined,
-      })),
+      orders.map((o) => {
+        const customer = Array.isArray(o.customers) ? o.customers[0] : o.customers;
+        return {
+          id: o.id,
+          customerName: customer?.name,
+          address: customer?.address,
+          latitude: customer?.latitude || depot.latitude,
+          longitude: customer?.longitude || depot.longitude,
+          weightKg: o.items?.reduce((sum: number, item: any) => sum + (item.weight || 1), 0) || 1,
+          timeWindowStart: o.delivery_window_start ? new Date(o.delivery_window_start).toTimeString().slice(0, 5) : undefined,
+          timeWindowEnd: o.delivery_window_end ? new Date(o.delivery_window_end).toTimeString().slice(0, 5) : undefined,
+        };
+      }),
       drivers.map((d) => ({
         id: d.id,
         name: d.name,
@@ -125,7 +128,7 @@ export async function GET(request: NextRequest) {
 
     // Save routes to database
     if (result.routes.length > 0) {
-      const routeRecords = result.routes.map((r) => ({
+      const routeRecords = result.routes.map((r: OptimizedRoute) => ({
         organization_id: organizationId,
         driver_id: r.driverId,
         name: `Route ${date} - ${r.driverName}`,
@@ -144,7 +147,7 @@ export async function GET(request: NextRequest) {
       // Update orders with route_id
       if (savedRoutes) {
         for (const route of savedRoutes) {
-          const routeResult = result.routes.find((r) => r.driverId === route.driver_id);
+          const routeResult = result.routes.find((r: OptimizedRoute) => r.driverId === route.driver_id);
           if (routeResult) {
             const orderIds = routeResult.stops
               .filter((s) => s.locationId !== "depot" && s.locationId !== `driver-home-${route.driver_id}`)

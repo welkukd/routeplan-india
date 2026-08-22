@@ -54,15 +54,15 @@ export type RouteRequest = z.infer<typeof RouteRequestSchema>;
 export const RouteStopSchema = z.object({
   locationId: z.string(),
   locationName: z.string(),
-  sequence: number,
-  arrivalTime: string, // HH:MM
-  departureTime: string, // HH:MM
-  distanceFromPreviousKm: number,
-  durationFromPreviousMin: number,
-  cumulativeDistanceKm: number,
-  cumulativeDurationMin: number,
-  loadKg: number,
-  loadL: number,
+  sequence: z.number(),
+  arrivalTime: z.string(), // HH:MM
+  departureTime: z.string(), // HH:MM
+  distanceFromPreviousKm: z.number(),
+  durationFromPreviousMin: z.number(),
+  cumulativeDistanceKm: z.number(),
+  cumulativeDurationMin: z.number(),
+  loadKg: z.number(),
+  loadL: z.number(),
 });
 
 export type RouteStop = z.infer<typeof RouteStopSchema>;
@@ -73,12 +73,12 @@ export const OptimizedRouteSchema = z.object({
   driverName: z.string(),
   driverPhone: z.string(),
   stops: z.array(RouteStopSchema),
-  totalDistanceKm: number,
-  totalDurationMin: number,
-  totalLoadKg: number,
-  totalLoadL: number,
-  utilizationPct: number,
-  cost: number,
+  totalDistanceKm: z.number(),
+  totalDurationMin: z.number(),
+  totalLoadKg: z.number(),
+  totalLoadL: z.number(),
+  utilizationPct: z.number(),
+  cost: z.number(),
   polyline: z.string().optional(), // encoded polyline for map display
 });
 
@@ -88,15 +88,15 @@ export const RouteResponseSchema = z.object({
   routes: z.array(OptimizedRouteSchema),
   unassignedLocations: z.array(LocationSchema),
   summary: z.object({
-    totalDistanceKm: number,
-    totalDurationMin: number,
-    totalCost: number,
-    vehiclesUsed: number,
-    locationsServed: number,
-    locationsUnassigned: number,
+    totalDistanceKm: z.number(),
+    totalDurationMin: z.number(),
+    totalCost: z.number(),
+    vehiclesUsed: z.number(),
+    locationsServed: z.number(),
+    locationsUnassigned: z.number(),
   }),
   metadata: z.object({
-    computationTimeMs: number,
+    computationTimeMs: z.number(),
     algorithm: z.string(),
     timestamp: z.string(),
   }),
@@ -374,7 +374,7 @@ export function solveVRP(request: RouteRequest): RouteResponse {
   };
 
   return {
-    routes,
+    routes: routes as OptimizedRoute[],
     unassignedLocations: unassigned,
     summary,
     metadata: {
@@ -423,6 +423,7 @@ export function createRouteRequestFromOrders(
       latitude: depot.latitude,
       longitude: depot.longitude,
       demand: 0,
+      serviceTimeMinutes: 0,
       type: "depot",
     },
   ];
@@ -456,6 +457,7 @@ export function createRouteRequestFromOrders(
       latitude: driver.homeLat,
       longitude: driver.homeLng,
       demand: 0,
+      serviceTimeMinutes: 0,
       type: "driver_home",
     },
     endLocation: {
@@ -465,11 +467,13 @@ export function createRouteRequestFromOrders(
       latitude: driver.homeLat,
       longitude: driver.homeLng,
       demand: 0,
+      serviceTimeMinutes: 0,
       type: "driver_home",
     },
     maxDistanceKm: 80,
     maxDurationMinutes: 480,
     vehicleType: driver.vehicleType,
+    fixedCost: 0,
     costPerKm: VEHICLE_COST_PER_KM[driver.vehicleType],
     costPerMinute: 1,
   }));

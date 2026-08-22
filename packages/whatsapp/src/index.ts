@@ -157,7 +157,7 @@ export class GupshupClient {
       throw new Error(`Gupshup API error: ${response.status} ${error}`);
     }
 
-    return response.json();
+    return response.json() as Promise<T>;
   }
 
   async sendTemplateMessage(template: WhatsAppTemplate, to: string, components?: Record<string, unknown>[]): Promise<{ message_id: string }> {
@@ -239,7 +239,8 @@ export class GupshupClient {
 
   async uploadMedia(file: Buffer, mimeType: string): Promise<{ file_id: string }> {
     const formData = new FormData();
-    formData.append("file", new Blob([file], { type: mimeType }));
+    const fileBlob = new Blob([new Uint8Array(file)], { type: mimeType });
+    formData.append("file", fileBlob);
     formData.append("channel", "whatsapp");
 
     const response = await fetch(`${GUPSHUP_BASE_URL}/media/upload`, {
@@ -252,7 +253,7 @@ export class GupshupClient {
       throw new Error(`Gupshup media upload failed: ${response.status}`);
     }
 
-    return response.json();
+    return response.json() as Promise<{ file_id: string }>;
   }
 
   async getTemplates(): Promise<unknown[]> {
