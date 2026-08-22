@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createGupshupClient, GupshupWebhookSchema, ROUTEPLAN_TEMPLATES } from "@routeplan/whatsapp";
 import { createServerClient } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const client = createGupshupClient();
