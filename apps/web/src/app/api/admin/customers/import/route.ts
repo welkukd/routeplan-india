@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@routeplan/db";
 import { Database } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 type CustomerInsert = Database["public"]["Tables"]["customers"]["Insert"];
 
 const DEFAULT_ORG_ID = "org-demo";

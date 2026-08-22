@@ -3,6 +3,8 @@ import { createServerClient } from "@routeplan/db";
 import { Database } from "@routeplan/db";
 import { solveVRP, createRouteRequestFromOrders, RouteRequestSchema, OptimizedRoute } from "@routeplan/routing";
 
+export const dynamic = "force-dynamic";
+
 type RouteRow = Database["public"]["Tables"]["routes"]["Row"];
 type RouteInsert = Database["public"]["Tables"]["routes"]["Insert"];
 type RouteUpdate = Database["public"]["Tables"]["routes"]["Update"];

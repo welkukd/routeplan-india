@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@routeplan/db";
 import { Database } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 type DriverRow = Database["public"]["Tables"]["drivers"]["Row"];
 
 // Default organization ID for demo purposes

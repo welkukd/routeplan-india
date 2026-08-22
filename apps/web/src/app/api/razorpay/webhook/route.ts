@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRazorpayClient } from "@routeplan/payments";
 import { createServerClient } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const client = createRazorpayClient();
