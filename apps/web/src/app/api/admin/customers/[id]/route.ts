@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@routeplan/db";
 import { Database } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 type Customer = Database["public"]["Tables"]["customers"]["Row"];
 type CustomerUpdate = Database["public"]["Tables"]["customers"]["Update"];
 

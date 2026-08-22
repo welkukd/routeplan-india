@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { solveVRP, createRouteRequestFromOrders, RouteRequestSchema, OptimizedRoute } from "@routeplan/routing";
 import { createServerClient } from "@routeplan/db";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = createServerClient();
