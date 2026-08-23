@@ -59,3 +59,4 @@ logs/
 # Playwright
 test-results/
 playwright-report/
+.env*
