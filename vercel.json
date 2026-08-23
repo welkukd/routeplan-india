@@ -10,12 +10,7 @@
       "maxDuration": 30
     }
   },
-  "crons": [
-    {
-      "path": "/api/cron/daily-routes",
-      "schedule": "0 5 * * *"
-    }
-  ],
+  
   "headers": [
     {
       "source": "/api/(.*)",

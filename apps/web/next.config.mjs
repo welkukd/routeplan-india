@@ -8,17 +8,6 @@ const nextConfig = {
     "@routeplan/payments",
     "@routeplan/ui",
   ],
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        "@routeplan/db": "../../packages/db/src",
-        "@routeplan/whatsapp": "../../packages/whatsapp/src",
-        "@routeplan/routing": "../../packages/routing/src",
-        "@routeplan/payments": "../../packages/payments/src",
-        "@routeplan/ui": "../../packages/ui/src",
-      },
-    },
-  },
 };
 
 export default nextConfig;
