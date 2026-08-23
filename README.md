@@ -73,4 +73,4 @@ npm run dev
 ## Deployment
 Push to main → Vercel auto-deploys.
 Supabase migrations run via CLI or dashboard.
-Gupshup webhook URL: `https://your-vercel-app.vercel.app/api/whatsapp/webhook`
+Gupshup webhook URL: `https://your-vercel-app.vercel.app/api/whatsapp/webhook` 
