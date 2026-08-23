@@ -275,23 +275,23 @@ function t(key: TranslationKey, lang: Language): string {
 
 interface Order {
   id: string;
-  orderNumber: string;
-  customerName: string;
-  customerPhone: string;
+  order_number: string;
+  customer_name: string;
+  customer_phone: string;
   address: string;
   latitude: number;
   longitude: number;
   status: "pending" | "assigned" | "picked_up" | "delivered" | "cancelled" | "failed";
   type: "pickup" | "delivery";
   items: Array<{ name: string; quantity: number; weight: number }>;
-  totalWeight: number;
-  amount: number;
-  paymentType: "cod" | "prepaid";
-  deliveryWindowStart?: string;
-  deliveryWindowEnd?: string;
+  total_weight: number;
+  total_amount: number;
+  payment_type: "cod" | "prepaid";
+  delivery_window_start?: string;
+  delivery_window_end?: string;
   notes?: string;
   sequence: number;
-  proofOfDelivery?: string;
+  proof_of_delivery?: string;
 }
 
 interface Route {
@@ -352,58 +352,58 @@ const MOCK_ROUTES: Route[] = [
 const MOCK_ORDERS: Order[] = [
   {
     id: "order-1",
-    orderNumber: "RP-2024-001",
-    customerName: "Sharma Dairy",
-    customerPhone: "919876543210",
+    order_number: "RP-2024-001",
+    customer_name: "Sharma Dairy",
+    customer_phone: "919876543210",
     address: "Shop 12, SV Road, Jogeshwari West, Mumbai 400102",
     latitude: 19.1383,
     longitude: 72.8303,
     status: "assigned",
     type: "delivery",
     items: [{ name: "Full Cream Milk 1L", quantity: 50, weight: 50 }, { name: "Toned Milk 500ml", quantity: 30, weight: 15 }],
-    totalWeight: 65,
-    amount: 3250,
-    paymentType: "cod",
-    deliveryWindowStart: "06:00",
-    deliveryWindowEnd: "07:00",
+    total_weight: 65,
+    total_amount: 3250,
+    payment_type: "cod",
+    delivery_window_start: "06:00",
+    delivery_window_end: "07:00",
     notes: "Leave at door if closed",
     sequence: 1,
   },
   {
     id: "order-2",
-    orderNumber: "RP-2024-002",
-    customerName: "Patel Kirana",
-    customerPhone: "919876543211",
+    order_number: "RP-2024-002",
+    customer_name: "Patel Kirana",
+    customer_phone: "919876543211",
     address: "Main Road, Goregaon East, Mumbai 400063",
     latitude: 19.1667,
     longitude: 72.8562,
     status: "assigned",
     type: "delivery",
     items: [{ name: "Bread Loaves", quantity: 100, weight: 40 }, { name: "Butter Packets 200g", quantity: 50, weight: 10 }],
-    totalWeight: 50,
-    amount: 4500,
-    paymentType: "prepaid",
-    deliveryWindowStart: "06:30",
-    deliveryWindowEnd: "07:30",
+    total_weight: 50,
+    total_amount: 4500,
+    payment_type: "prepaid",
+    delivery_window_start: "06:30",
+    delivery_window_end: "07:30",
     notes: "Call on arrival",
     sequence: 2,
   },
   {
     id: "order-3",
-    orderNumber: "RP-2024-003",
-    customerName: "Gupta Pharmacy",
-    customerPhone: "919876543212",
+    order_number: "RP-2024-003",
+    customer_name: "Gupta Pharmacy",
+    customer_phone: "919876543212",
     address: "Link Road, Malad West, Mumbai 400064",
     latitude: 19.1889,
     longitude: 72.8479,
     status: "picked_up",
     type: "delivery",
     items: [{ name: "Paracetamol 500mg", quantity: 200, weight: 5 }, { name: "Vitamin D3", quantity: 50, weight: 3 }],
-    totalWeight: 8,
-    amount: 12000,
-    paymentType: "prepaid",
-    deliveryWindowStart: "06:45",
-    deliveryWindowEnd: "07:45",
+    total_weight: 8,
+    total_amount: 12000,
+    payment_type: "prepaid",
+    delivery_window_start: "06:45",
+    delivery_window_end: "07:45",
     notes: "Urgent - temperature sensitive",
     sequence: 3,
   },
@@ -456,28 +456,28 @@ function OrderCard({ order, onAction }: { order: Order; onAction: (action: strin
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <span className="font-mono text-sm font-medium text-amber-400">{order.orderNumber}</span>
+            <span className="font-mono text-sm font-medium text-amber-400">{order.order_number}</span>
             <StatusBadge status={order.status} />
             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${order.type === "pickup" ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"}`}>
               {t(order.type, lang)}
             </span>
           </div>
-          <h3 className="font-medium text-foreground mb-1 truncate">{order.customerName}</h3>
+          <h3 className="font-medium text-foreground mb-1 truncate">{order.customer_name}</h3>
           <p className="text-sm text-muted-foreground mb-2 flex items-center gap-1">
             <MapPin className="w-3 h-3" /> {order.address}
           </p>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-2">
             <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {order.items.length} {t("items", lang)}</span>
-            <span className="flex items-center gap-1"><Activity className="w-3 h-3" /> {order.totalWeight} kg</span>
-            <span className="flex items-center gap-1"><IndianRupee className="w-3 h-3" /> ₹{order.amount}</span>
-            <span className={`flex items-center gap-1 ${order.paymentType === "cod" ? "text-amber-400" : "text-green-400"}`}>
-              {order.paymentType === "cod" ? <DollarSign className="w-3 h-3" /> : <CreditCard className="w-3 h-3" />}
-              {t(order.paymentType, lang)}
+            <span className="flex items-center gap-1"><Activity className="w-3 h-3" /> {order.total_weight} kg</span>
+            <span className="flex items-center gap-1"><IndianRupee className="w-3 h-3" /> ₹{order.total_amount}</span>
+            <span className={`flex items-center gap-1 ${order.payment_type === "cod" ? "text-amber-400" : "text-green-400"}`}>
+              {order.payment_type === "cod" ? <DollarSign className="w-3 h-3" /> : <CreditCard className="w-3 h-3" />}
+              {t(order.payment_type, lang)}
             </span>
           </div>
-          {order.deliveryWindowStart && (
+          {order.delivery_window_start && (
             <p className="text-sm text-muted-foreground flex items-center gap-1">
-              <Clock className="w-3 h-3" /> {t("deliveryWindowStart", lang)}: {order.deliveryWindowStart} - {order.deliveryWindowEnd}
+              <Clock className="w-3 h-3" /> {t("deliveryWindowStart", lang)}: {order.delivery_window_start} - {order.delivery_window_end}
             </p>
           )}
           {order.notes && (
@@ -818,7 +818,7 @@ export default function DriverDashboard() {
     const handleOffline = () => setNetworkOnline(false);
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
-    setNetworkOnline(navigator.onLine);
+    queueMicrotask(() => setNetworkOnline(navigator.onLine));
 
     // Battery API
     if ("getBattery" in navigator) {
@@ -862,10 +862,10 @@ export default function DriverDashboard() {
       }
     } else if (action === "call") {
       const order = MOCK_ORDERS.find((o) => o.id === orderId);
-      if (order) window.open(`tel:${order.customerPhone}`, "_self");
+      if (order) window.open(`tel:${order.customer_phone}`, "_self");
     } else if (action === "message") {
       const order = MOCK_ORDERS.find((o) => o.id === orderId);
-      if (order) window.open(`https://wa.me/${order.customerPhone}`, "_blank");
+      if (order) window.open(`https://wa.me/${order.customer_phone}`, "_blank");
     }
     // For pickup/deliver/fail: update local state, queue for background sync
   }, []);
@@ -881,7 +881,7 @@ export default function DriverDashboard() {
   }, [setRoute, tLang]);
 
   // Merge mock orders with local state
-  const allOrders = [...MOCK_ORDERS, ...localOrders.filter((o: any) => !MOCK_ORDERS.some((m) => m.id === o.id))];
+  const allOrders: Order[] = [...MOCK_ORDERS, ...localOrders.filter((o) => !MOCK_ORDERS.some((m) => m.id === o.id))] as Order[];
 
   if (activeTab === "dashboard") {
     return (

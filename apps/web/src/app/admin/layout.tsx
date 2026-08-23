@@ -15,10 +15,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Truck,
-  Smartphone,
-  Zap,
-  Shield,
-  Globe,
   Bell,
   LogOut,
   User,
@@ -45,43 +41,26 @@ const userNavItems = [
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) return savedTheme === "dark";
+    }
+    return true;
+  });
   const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true);
-    // Check for saved theme preference or default to dark
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setDarkMode(savedTheme === "dark");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      document.documentElement.classList.toggle("dark", darkMode);
-      localStorage.setItem("theme", darkMode ? "dark" : "light");
-    }
-  }, [darkMode, mounted]);
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   // Close sidebar on mobile when navigating
   useEffect(() => {
     if (window.innerWidth < 1024) {
-      setSidebarOpen(false);
+      queueMicrotask(() => setSidebarOpen(false));
     }
   }, [pathname]);
-
-  if (!mounted) {
-    return (
-      <html lang="en-IN" className="dark">
-        <head>
-          <meta name="theme-color" content="#08090a" />
-        </head>
-        <body className="min-h-screen bg-background font-sans antialiased" />
-      </html>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex">

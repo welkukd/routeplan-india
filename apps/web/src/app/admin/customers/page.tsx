@@ -149,6 +149,15 @@ const mockCustomers = [
 const customerTypes = ["All", "Dairy", "Pharmacy", "Bakery", "Kirana"];
 const statusOptions = ["All", "Active", "Inactive"];
 
+function SortIcon({ sortKey, sortConfig }: { sortKey: string; sortConfig: { key: string; direction: "asc" | "desc" } | null }) {
+  if (sortConfig?.key !== sortKey) return <span className="w-4 h-4 opacity-30" />;
+  return sortConfig.direction === "asc" ? (
+    <ChevronLeft className="w-4 h-4" />
+  ) : (
+    <ChevronRight className="w-4 h-4" />
+  );
+}
+
 export default function CustomersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("All");
@@ -220,15 +229,6 @@ export default function CustomersPage() {
       <span className={cn("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border", colors[type as keyof typeof colors] || colors.Dairy)}>
         {type}
       </span>
-    );
-  };
-
-  const SortIcon = ({ key }: { key: string }) => {
-    if (sortConfig?.key !== key) return <span className="w-4 h-4 opacity-30" />;
-    return sortConfig.direction === "asc" ? (
-      <ChevronLeft className="w-4 h-4" />
-    ) : (
-      <ChevronRight className="w-4 h-4" />
     );
   };
 
@@ -312,7 +312,7 @@ export default function CustomersPage() {
                 >
                   <div className="flex items-center gap-2">
                     Customer
-                    <SortIcon key="name" />
+                    <SortIcon sortKey="name" sortConfig={sortConfig} />
                   </div>
                 </th>
                 <th
@@ -322,7 +322,7 @@ export default function CustomersPage() {
                 >
                   <div className="flex items-center gap-2">
                     Type
-                    <SortIcon key="type" />
+                    <SortIcon sortKey="type" sortConfig={sortConfig} />
                   </div>
                 </th>
                 <th
@@ -332,7 +332,7 @@ export default function CustomersPage() {
                 >
                   <div className="flex items-center gap-2">
                     Monthly Orders
-                    <SortIcon key="monthlyOrders" />
+                    <SortIcon sortKey="monthlyOrders" sortConfig={sortConfig} />
                   </div>
                 </th>
                 <th
@@ -342,7 +342,7 @@ export default function CustomersPage() {
                 >
                   <div className="flex items-center gap-2">
                     Revenue
-                    <SortIcon key="revenue" />
+                    <SortIcon sortKey="revenue" sortConfig={sortConfig} />
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" scope="col">

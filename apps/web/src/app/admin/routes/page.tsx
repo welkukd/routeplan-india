@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MapPin, Truck, Clock, Map, RefreshCw, Settings, MoreVertical, X, ChevronDown, ChevronUp, AlertTriangle, CheckCircle, Loader2, MapPin as MapPinIcon, User, Package, Navigation, Trash2, Edit, ArrowUpDown, GripVertical, Calendar } from "lucide-react";
+import { MapPin, Truck, Clock, Map, RefreshCw, Settings, MoreVertical, X, ChevronDown, ChevronUp, AlertTriangle, CheckCircle, Loader2, MapPin as MapPinIcon, User, Package, Navigation, Calendar } from "lucide-react";
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -198,9 +198,11 @@ export default function RoutesPage() {
   };
 
   useEffect(() => {
-    fetchRoutes();
-    fetchDrivers();
-  }, [date, statusFilter]);
+    queueMicrotask(() => {
+      fetchRoutes();
+      fetchDrivers();
+    });
+  }, [fetchRoutes, fetchDrivers]);
 
   const handleOptimize = async () => {
     setOptimizing("all");
@@ -607,17 +609,17 @@ function DraggableStop({
 
   return (
     <div
-      draggable
-      onDragStart={(e) => onDragStart(e, stop, routeId)}
-      className={cn(
-        "glass p-3 rounded-lg border border-border/30 flex items-center gap-3 transition-all",
-        isDragging && "opacity-50 rotate-1 scale-102 shadow-lg"
-      )}
-    >
-      <GripVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab active:cursor-grabbing flex-shrink-0" />
-      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
-        {index + 1}
-      </div>
+            draggable
+            onDragStart={(e) => onDragStart(e, stop, routeId)}
+            className={cn(
+              "glass p-3 rounded-lg border border-border/30 flex items-center gap-3 transition-all",
+              isDragging && "opacity-50 rotate-1 scale-102 shadow-lg"
+            )}
+          >
+            <MoreVertical className="w-4 h-4 text-muted-foreground/50 cursor-grab active:cursor-grabbing flex-shrink-0" />
+            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
+              {index + 1}
+            </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground truncate">{stop.customer_name}</p>
         <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
@@ -736,7 +738,7 @@ function RouteDetailModal({
                         onClick={() => {}}
                         aria-label="Reassign stop"
                       >
-                        <ArrowUpDown className="w-4 h-4" />
+                        <MoreVertical className="w-4 h-4" />
                       </Button>
                     </div>
                   ))}

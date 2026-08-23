@@ -6,10 +6,9 @@ import { useDriverStore } from "./store";
 
 export default function DriverLayout({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  const { language } = useDriverStore();
 
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
     // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/driver/sw.js").catch(console.error);
