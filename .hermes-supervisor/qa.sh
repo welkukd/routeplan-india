@@ -34,6 +34,10 @@ run "Mission acceptance verifier tests" \
   node --test .hermes-supervisor/verify-acceptance.test.mjs
 run "Release provenance verifier tests" \
   node --test .hermes-supervisor/verify-release-provenance.test.mjs
+run "Public production configuration verifier tests" \
+  node --test \
+    .hermes-supervisor/verify-public-production-config.test.mjs \
+    .hermes-supervisor/verify-public-production-config-runner.test.mjs
 run "TypeScript strict checks" npm run typecheck
 run "Unit tests" npm run test
 run "Production build" npm run build
@@ -47,6 +51,8 @@ if [[ "$MODE" == "--external" ]]; then
     node .hermes-supervisor/verify-release-provenance.mjs
   run "Mission completion acceptance contract" \
     node .hermes-supervisor/verify-acceptance.mjs
+  run "Vercel public production configuration" \
+    node .hermes-supervisor/verify-public-production-config.mjs
   run "Production HTTP and webhook readiness" \
     node .hermes-supervisor/verify-production.mjs
 fi
