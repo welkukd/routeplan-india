@@ -74,10 +74,10 @@ Two reviewer claims were rejected after official-documentation readback: Self-Se
 
 ## Git/GitHub state
 
-- Local commits now include `a4203e7` (mission control) and `99933ab` (GitHub blocker issue draft).
+- Local commits now include `a4203e7` (mission control), `99933ab` (GitHub blocker issue draft), and `472b201` (grounded reliability review and issue draft).
 - `origin`: `https://github.com/arjun/routeplan-india.git`.
 - `gh` is not installed; no token or credential is available.
-- `git ls-remote --heads origin main` fails with `could not read Username for 'https://github.com'`.
+- The post-commit `git push origin main` attempt failed with `could not read Username for 'https://github.com'`; remote state and CI remain unreadable.
 - Ready-to-post drafts:
   - `.hermes-supervisor/GITHUB_ISSUE_DRAFT.md`
   - `.hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`
