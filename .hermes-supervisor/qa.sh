@@ -30,6 +30,8 @@ run() {
 
 run "Repository and environment-template invariants" \
   node .hermes-supervisor/verify-repository.mjs
+run "Mission acceptance verifier tests" \
+  node --test .hermes-supervisor/verify-acceptance.test.mjs
 run "TypeScript strict checks" npm run typecheck
 run "Unit tests" npm run test
 run "Production build" npm run build
@@ -39,6 +41,8 @@ run "Production dependency audit (high severity or above)" \
   npm audit --omit=dev --audit-level=high
 
 if [[ "$MODE" == "--external" ]]; then
+  run "Mission completion acceptance contract" \
+    node .hermes-supervisor/verify-acceptance.mjs
   run "Production HTTP and webhook readiness" \
     node .hermes-supervisor/verify-production.mjs
 fi

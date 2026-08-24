@@ -1,8 +1,8 @@
 # WhatsApp Integration — Gupshup Self-Serve V2
 
-Status: local implementation and Vercel landing deployment are verified; provider/database configuration remains blocked. Deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY` and aliased to `https://routeplan-india.vercel.app`, but `GET /api/whatsapp/webhook` returns `503 configured:false` until real provider values replace placeholders and missing variables.
+Status: **BLOCKED** for a real production flow. Local implementation and the Vercel landing deployment are verified. Deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY` and aliased to `https://routeplan-india.vercel.app`, but `GET /api/whatsapp/webhook` returns `503 configured:false` until real provider values replace placeholders and missing variables. The full blocker ledger is `.hermes-supervisor/STATUS.md`.
 
-Durable acceptance evidence and deterministic gates live under `.hermes-supervisor/`. Run `npm run qa` locally and `npm run qa:external` before claiming production readiness. The external gate intentionally remains non-zero while the webhook reports missing configuration.
+Durable acceptance evidence and deterministic gates live under `.hermes-supervisor/`. `npm run qa` runs eight local gates. `npm run qa:external` additionally requires every manual checkbox in `ACCEPTANCE.md` and the live production probe to pass; it intentionally remains non-zero while reliability, authorization, provider/database configuration, readback, and real-flow evidence are incomplete.
 
 ## Implemented architecture
 
@@ -10,6 +10,7 @@ Durable acceptance evidence and deterministic gates live under `.hermes-supervis
 - `apps/web/src/app/api/whatsapp/webhook/route.ts` — readiness check, callback authentication, payload validation, fast empty `202`, deferred processing.
 - `apps/web/src/lib/whatsapp-webhook.ts` — idempotent onboarding state machine and route command.
 - `apps/web/src/lib/supabase-whatsapp-repository.ts` — tenant-scoped persistence adapter.
+- `supabase/migrations/001_initial_schema.sql` — base schema required by the WhatsApp repository.
 - `supabase/migrations/002_whatsapp_webhook_sessions.sql` — idempotency, sessions, RLS, indexes, message-type expansion.
 
 ## Documented callback envelope
@@ -97,7 +98,11 @@ npm test --workspace=@routeplan/web
 npm run typecheck
 npm run build
 npm run test:e2e
+npm run qa
+npm run qa:external
 ```
+
+The local command must exit zero before an isolated mission commit. The external command is the release-completion gate: it prints the exact unchecked acceptance items and the public readiness failure without exposing environment values.
 
 Real-flow acceptance remains:
 

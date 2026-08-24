@@ -10,6 +10,9 @@ const requiredFiles = [
   ".hermes-supervisor/LATEST_REVIEW.md",
   ".hermes-supervisor/GITHUB_ISSUE_DRAFT.md",
   ".hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md",
+  ".hermes-supervisor/lib/acceptance-contract.mjs",
+  ".hermes-supervisor/verify-acceptance.mjs",
+  ".hermes-supervisor/verify-acceptance.test.mjs",
   ".hermes-supervisor/qa.sh",
   "docs/WHATSAPP.md",
   "supabase/migrations/001_initial_schema.sql",
@@ -61,6 +64,17 @@ const trackedSecretEnv = tracked.filter((path) => {
 });
 if (trackedSecretEnv.length > 0) {
   throw new Error(`Secret-bearing env files are tracked: ${trackedSecretEnv.join(", ")}`);
+}
+
+const qaSource = readFileSync(resolve(root, ".hermes-supervisor/qa.sh"), "utf8");
+for (const marker of [
+  "node --test .hermes-supervisor/verify-acceptance.test.mjs",
+  "node .hermes-supervisor/verify-acceptance.mjs",
+  "node .hermes-supervisor/verify-production.mjs",
+]) {
+  if (!qaSource.includes(marker)) {
+    throw new Error(`QA completion-contract marker is missing: ${marker}`);
+  }
 }
 
 const whatsappSource = readFileSync(resolve(root, "packages/whatsapp/src/index.ts"), "utf8");

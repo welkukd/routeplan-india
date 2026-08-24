@@ -18,8 +18,8 @@ The application and webhook code are deployed, but the production WhatsApp flow 
 - Supabase URL and anon key are placeholders.
 - Supabase CLI is unauthenticated and returns `LegacyPlatformAuthRequiredError`.
 - Local sensitive Vercel pulls contain `[SENSITIVE]` redactions, not usable credentials.
-- `npm run qa` passes all 7 local gates.
-- `npm run qa:external` passes 7 gates and fails only the production-readiness gate.
+- `npm run qa` passes all 8 local gates, including 6 acceptance-verifier tests.
+- `npm run qa:external` passes 8 gates and fails closed on two release gates: 33 manual acceptance items remain unchecked, and production readiness reports missing configuration.
 
 ## Reproduction
 
@@ -44,7 +44,7 @@ supabase projects list
 
 ## Acceptance
 
-- [ ] `GET /api/whatsapp/webhook` returns HTTP 200 with `configured:true` and `missing: []`.
+- [ ] `GET /api/whatsapp/webhook` returns HTTP 200 with `configured:true` and no missing variables reported.
 - [ ] Migrations and RLS are verified by database readback.
 - [ ] Real inbound, outbound, delivery, and replay-idempotency evidence is attached without secret values.
 - [ ] `npm run qa:external` exits zero.

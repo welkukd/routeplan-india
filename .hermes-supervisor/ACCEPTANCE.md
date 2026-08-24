@@ -1,7 +1,7 @@
 # Acceptance — WhatsApp Webhook Production Readiness
 
-Last evidence refresh: 2026-08-24T00:08:31-04:00
-Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
+Last evidence refresh: 2026-08-24T00:33:51-0400
+Baseline commit: `98f95aee5a6ff7c251c6443f88169218ece976b1`
 
 ## A. Local implementation
 
@@ -18,7 +18,8 @@ Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
 - [x] `npm run build` exits zero.
 - [x] `npm run lint` exits zero with 0 errors; 82 warnings remain.
 - [x] `npm run test:e2e` exits zero: 2 smoke tests pass.
-- [x] `npm run qa` exits zero: 7 gates pass.
+- [x] `npm run qa` exits zero: 8 gates pass.
+- [x] `qa:external` parses every manual acceptance checkbox and fails closed while any remain unchecked.
 - [x] Fresh independent review of mission control and the landing cleanup finds no critical/high-severity defect.
 - [ ] Fresh independent review of the full production webhook finds no critical/high-severity defect. Current high-severity reliability follow-ups are tracked in `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`.
 
@@ -30,7 +31,7 @@ Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
 - [x] Production landing page has no dead `href="#"` controls and no unverified `99.9%` claim.
 - [x] Production-targeted Playwright smoke tests pass: 2 tests.
 - [x] Live desktop 1440px and mobile 390px checks show no overflow, broken images, or console errors.
-- [ ] Production readiness returns HTTP 200 with `configured:true` and an empty `missing` array.
+- [ ] Production readiness returns HTTP 200 with `configured:true` and no missing variables reported.
 - [ ] `GUPSHUP_APP_NAME` is configured in Vercel Production.
 - [ ] `GUPSHUP_SOURCE_NUMBER` is configured in `91XXXXXXXXXX` format.
 - [ ] `NEXT_PUBLIC_WHATSAPP_NUMBER` is configured in `91XXXXXXXXXX` format.
@@ -77,7 +78,7 @@ Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
 - [ ] Full development dependency audit is clean. Current result: 8 findings (3 moderate, 3 high, 2 critical) in Playwright/Vite/Vitest tooling.
 - [ ] The manually deployed landing-page source is committed so production is reproducible from git.
 - [ ] GitHub authentication is restored, changes are pushed, and remote commit/CI state is read back.
-- [ ] `npm run qa:external` exits zero against production.
+- Runtime completion gate (derived, not manually checked): `npm run qa:external` exits zero only after every checkbox above and the live production probe pass.
 
 ## Current verdict
 
