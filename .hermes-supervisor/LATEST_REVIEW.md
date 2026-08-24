@@ -1,15 +1,17 @@
 # Latest Independent Review
 
-Completed: 2026-08-24T00:08:31-04:00
-Scope: full WhatsApp webhook implementation, mission control, landing cleanup, and production deployment
+Completed: 2026-08-24T00:50:06-0400
+Scope: full WhatsApp webhook implementation, fail-closed acceptance gate, mission control, landing cleanup, and production deployment
 
 ## Reviewed evidence
 
 - Independent mission-control/reliability-document review: `deleg_b52d3e2f` — approved with no critical/high finding.
+- Independent staged-diff review of the acceptance parser, tests, and QA wiring: `deleg_4b0e5e15` — approved with no security or logic finding.
 - Independent webhook/security review: `deleg_d8ea2611`.
 - Independent landing deployment review: `deleg_6a4cf9f8`.
 - Earlier mission-control and blocker review: `deleg_d7b16a33`.
-- Local `./.hermes-supervisor/qa.sh`: 7 passed, 0 failed.
+- Local `./.hermes-supervisor/qa.sh`: 8 passed, 0 failed.
+- External `./.hermes-supervisor/qa.sh --external`: 8 passed, 2 failed as designed—25/58 acceptance items are checked and public readiness remains HTTP 503.
 - Live deployment: `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL`, `READY`.
 - Production-targeted Playwright: 2 passed.
 - 1440px desktop and 390px mobile live screenshots and DOM checks.
@@ -22,6 +24,8 @@ Scope: full WhatsApp webhook implementation, mission control, landing cleanup, a
 - No critical/high security defect found in the mission-control scripts.
 - The QA runner is fail-closed: every failed command increments the failure count and produces non-zero final exit.
 - Repository marker checks are paired with strict typecheck, 35 unit tests, production build, lint, Playwright, and production dependency audit; they are not treated as behavioral proof alone.
+- The release path now parses all 58 manual acceptance items, enforces per-section minimum counts to detect contract deletion, and refuses completion while any item remains unchecked.
+- Six dependency-free parser/structure tests run inside local QA; repository invariants enforce that both acceptance and public production gates stay wired into external QA.
 - Secret values are not printed.
 
 ### Landing cleanup and deployment

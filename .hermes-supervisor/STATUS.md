@@ -1,20 +1,21 @@
 # Status — WhatsApp Webhook Production Readiness
 
-Updated: 2026-08-24T00:08:31-04:00
-Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
+Updated: 2026-08-24T00:50:06-0400
+Current shipped commit: `86880f97ab5cc89557c0183601e67d314b40c300`
 Verdict: **BLOCKED**
 
 ## This pass
 
-- Reconstructed continuity from session history, git, durable mission control, Vercel, Supabase CLI, and production HTTP readback.
-- Ran the complete local QA gate successfully.
-- Independently reviewed the pending landing cleanup, then deployed the exact verified working tree to Vercel Production.
-- Read the new deployment, aliases, pages, landing assertions, webhook readiness, and production-targeted Playwright results back.
-- Inspected the live site at desktop 1440×900 and mobile 390×844 with Playwright screenshots and DOM/console assertions.
-- Ran a new independent full-webhook security/reliability review and grounded disputed provider-contract findings against Gupshup's official documentation.
-- Preserved confirmed durable-retry and event-ordering work in `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`.
-- Updated acceptance, review, WhatsApp documentation, and repository invariant coverage.
-- Attempted to correct stale root `AGENTS.md`, but the protected instruction-file guard blocked an unattended write despite the repository allowlist. The file remains untracked and stale; no bypass was attempted.
+- Re-read git state, local environment classifications, Vercel project/deployment/environment metadata, public readiness, Supabase CLI authentication, and GitHub authentication without exposing secret values.
+- Added a fail-closed acceptance parser and release gate so `qa:external` cannot report completion while any manual mission checkbox remains unchecked.
+- Added six dependency-free Node tests covering checkbox parsing, malformed input, empty contracts, structural contraction, and invalid types.
+- Pinned minimum checklist counts for all six acceptance sections so deleting blockers cannot turn the release gate green.
+- Wired parser tests into local QA and the completion contract into external QA; repository invariants now verify that wiring remains present.
+- Verified `npm run qa`: 8 passed, 0 failed. Verified `npm run qa:external`: 8 passed, 2 failed exactly as intended—33 acceptance items remain and production readiness is HTTP 503.
+- Received an independent cached-diff approval with no security or logic finding (`deleg_4b0e5e15`).
+- Committed the isolated mission-control change as `86880f9`; no protected source-owner change was staged.
+- Retried `git push origin main`; it remains blocked by missing GitHub credentials (`could not read Username`).
+- Kept deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` unchanged because this pass modified mission-control code and documentation only, not the deployed application.
 
 ## Verified local evidence
 
@@ -22,10 +23,11 @@ Verdict: **BLOCKED**
 |---|---|
 | `npm run typecheck` | PASS |
 | `npm run test` | PASS — 35 tests |
+| Acceptance verifier | PASS — 6 tests |
 | `npm run build` | PASS |
 | `npm run lint` | PASS — 0 errors, 82 warnings |
 | `npm run test:e2e` | PASS — 2 tests |
-| `npm run qa` | PASS — 7 gates |
+| `npm run qa` | PASS — 8 gates |
 | `npm audit --omit=dev --audit-level=high` | PASS — 0 production vulnerabilities |
 
 Full `npm audit` and Vercel's development install report 8 build/test-tool findings: 3 moderate, 3 high, and 2 critical in Playwright/Vite/Vitest-related chains. They are not present in the production-only dependency graph, but remain an operational blocker for broader contributor/CI exposure.
@@ -43,7 +45,7 @@ Full `npm audit` and Vercel's development install report 8 build/test-tool findi
 - Desktop and mobile: no horizontal overflow, broken images, or console/page errors.
 - Production readiness: HTTP 503, `configured:false`.
 - Missing list: `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER`, `GUPSHUP_WEBHOOK_SECRET`.
-- `npm run qa:external` remains intentionally non-zero because the production-readiness gate fails.
+- `npm run qa:external` is fail-closed: 8 gates pass; the acceptance contract fails with 25/58 checked and the public readiness probe fails on HTTP 503.
 - Vercel usage percentage is unavailable: `vercel usage` returns `Costs not found (404)`.
 - Deployment and test actions consumed $0; no Gupshup conversation or real Supabase write was made.
 
@@ -52,6 +54,7 @@ Full `npm audit` and Vercel's development install report 8 build/test-tool findi
 Approved:
 
 - Mission-control and QA scripts.
+- Acceptance parser, six tests, structural-contraction guard, and external release-gate wiring.
 - Exact landing cleanup.
 - New production deployment and live desktop/mobile rendering.
 
@@ -74,10 +77,10 @@ Two reviewer claims were rejected after official-documentation readback: Self-Se
 
 ## Git/GitHub state
 
-- Local commits now include `a4203e7` (mission control), `99933ab` (GitHub blocker issue draft), and `472b201` (grounded reliability review and issue draft).
+- Local commits now include `a4203e7` (mission control), `99933ab` (GitHub blocker issue draft), `472b201` (grounded reliability review), `98f95ae` (push blocker evidence), and `86880f9` (fail-closed release acceptance).
 - `origin`: `https://github.com/arjun/routeplan-india.git`.
 - `gh` is not installed; no token or credential is available.
-- The post-commit `git push origin main` attempt failed with `could not read Username for 'https://github.com'`; remote state and CI remain unreadable.
+- The post-`86880f9` `git push origin main` attempt failed with `could not read Username for 'https://github.com'`; remote state and CI remain unreadable.
 - Ready-to-post drafts:
   - `.hermes-supervisor/GITHUB_ISSUE_DRAFT.md`
   - `.hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`
