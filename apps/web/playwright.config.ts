@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const localBaseUrl = "http://127.0.0.1:3100";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || localBaseUrl;
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -7,7 +10,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3100",
+    baseURL,
     trace: "retain-on-failure",
   },
   projects: [
@@ -16,10 +19,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
-    url: "http://127.0.0.1:3100",
-    reuseExistingServer: false,
-    timeout: 120_000,
-  },
+  ...(process.env.PLAYWRIGHT_BASE_URL
+    ? {}
+    : {
+        webServer: {
+          command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
+          url: localBaseUrl,
+          reuseExistingServer: false,
+          timeout: 120_000,
+        },
+      }),
 });

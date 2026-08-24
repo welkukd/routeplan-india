@@ -14,6 +14,7 @@ Last verified: 2026-08-23
 - [x] Playwright smoke tests for the landing page and webhook readiness endpoint.
 - [x] Workspace build, typecheck, lint, unit-test, E2E, and production dependency audit commands.
 - [x] Landing page no longer claims Phase 1 is live or exposes `91XXXXXXXXXX` links when no number is configured.
+- [x] Vercel production deployment `dpl_2D6GcN8Zs8iVbMJ8uZRprvsqHAj9` reached `READY`; both `routeplan-india.vercel.app` and the team alias return HTTP 200.
 
 ## Incomplete / blocked
 
