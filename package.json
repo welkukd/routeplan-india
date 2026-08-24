@@ -13,6 +13,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e --workspace=@routeplan/web --if-present",
+    "qa": "./.hermes-supervisor/qa.sh",
+    "qa:external": "./.hermes-supervisor/qa.sh --external",
     "db:push": "cd packages/db && npx supabase db push",
     "db:migrate": "cd packages/db && npx supabase migration new",
     "db:reset": "cd packages/db && npx supabase db reset"

@@ -1,6 +1,8 @@
 # WhatsApp Integration — Gupshup Self-Serve V2
 
-Status: code-complete, provider/database configuration pending.
+Status: code-complete, provider/database configuration pending. The Vercel project is linked and the production alias is live, but `GET /api/whatsapp/webhook` returns `503 configured:false` until real provider values replace placeholders and missing variables.
+
+Durable acceptance evidence and deterministic gates live under `.hermes-supervisor/`. Run `npm run qa` locally and `npm run qa:external` before claiming production readiness.
 
 ## Implemented architecture
 
