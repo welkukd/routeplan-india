@@ -1,5 +1,5 @@
 export const REQUIRED_SECTION_MINIMUMS = Object.freeze({
-  "A. Local implementation": 17,
+  "A. Local implementation": 18,
   "B. Production deployment": 11,
   "C. Supabase readback": 7,
   "D. Gupshup readback": 5,

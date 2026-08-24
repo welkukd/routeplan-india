@@ -11,8 +11,11 @@ const requiredFiles = [
   ".hermes-supervisor/GITHUB_ISSUE_DRAFT.md",
   ".hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md",
   ".hermes-supervisor/lib/acceptance-contract.mjs",
+  ".hermes-supervisor/lib/release-provenance.mjs",
   ".hermes-supervisor/verify-acceptance.mjs",
   ".hermes-supervisor/verify-acceptance.test.mjs",
+  ".hermes-supervisor/verify-release-provenance.mjs",
+  ".hermes-supervisor/verify-release-provenance.test.mjs",
   ".hermes-supervisor/qa.sh",
   "docs/WHATSAPP.md",
   "supabase/migrations/001_initial_schema.sql",
@@ -69,6 +72,8 @@ if (trackedSecretEnv.length > 0) {
 const qaSource = readFileSync(resolve(root, ".hermes-supervisor/qa.sh"), "utf8");
 for (const marker of [
   "node --test .hermes-supervisor/verify-acceptance.test.mjs",
+  "node --test .hermes-supervisor/verify-release-provenance.test.mjs",
+  "node .hermes-supervisor/verify-release-provenance.mjs",
   "node .hermes-supervisor/verify-acceptance.mjs",
   "node .hermes-supervisor/verify-production.mjs",
 ]) {

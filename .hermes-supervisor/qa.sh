@@ -32,6 +32,8 @@ run "Repository and environment-template invariants" \
   node .hermes-supervisor/verify-repository.mjs
 run "Mission acceptance verifier tests" \
   node --test .hermes-supervisor/verify-acceptance.test.mjs
+run "Release provenance verifier tests" \
+  node --test .hermes-supervisor/verify-release-provenance.test.mjs
 run "TypeScript strict checks" npm run typecheck
 run "Unit tests" npm run test
 run "Production build" npm run build
@@ -41,6 +43,8 @@ run "Production dependency audit (high severity or above)" \
   npm audit --omit=dev --audit-level=high
 
 if [[ "$MODE" == "--external" ]]; then
+  run "Git, GitHub, and Vercel release provenance" \
+    node .hermes-supervisor/verify-release-provenance.mjs
   run "Mission completion acceptance contract" \
     node .hermes-supervisor/verify-acceptance.mjs
   run "Production HTTP and webhook readiness" \

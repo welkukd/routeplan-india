@@ -1,7 +1,7 @@
 # Acceptance — WhatsApp Webhook Production Readiness
 
-Last evidence refresh: 2026-08-24T00:33:51-0400
-Baseline commit: `98f95aee5a6ff7c251c6443f88169218ece976b1`
+Last evidence refresh: 2026-08-24T01:16:13-0400
+Baseline commit: `0db7552d231464e9c21817692fa45135e99a7c21`
 
 ## A. Local implementation
 
@@ -18,8 +18,9 @@ Baseline commit: `98f95aee5a6ff7c251c6443f88169218ece976b1`
 - [x] `npm run build` exits zero.
 - [x] `npm run lint` exits zero with 0 errors; 82 warnings remain.
 - [x] `npm run test:e2e` exits zero: 2 smoke tests pass.
-- [x] `npm run qa` exits zero: 8 gates pass.
+- [x] `npm run qa` exits zero: 9 gates pass.
 - [x] `qa:external` parses every manual acceptance checkbox and fails closed while any remain unchecked.
+- [x] Release-provenance logic has dependency-free tests for dirty files, Git divergence, missing evidence, dirty deployments, commit mismatch, and non-production state.
 - [x] Fresh independent review of mission control and the landing cleanup finds no critical/high-severity defect.
 - [ ] Fresh independent review of the full production webhook finds no critical/high-severity defect. Current high-severity reliability follow-ups are tracked in `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`.
 
@@ -76,7 +77,7 @@ Baseline commit: `98f95aee5a6ff7c251c6443f88169218ece976b1`
 - [x] Readiness output names missing variables but does not expose values.
 - [x] Production dependency audit is clean: `npm audit --omit=dev` reports 0 vulnerabilities.
 - [ ] Full development dependency audit is clean. Current result: 8 findings (3 moderate, 3 high, 2 critical) in Playwright/Vite/Vitest tooling.
-- [ ] The manually deployed landing-page source is committed so production is reproducible from git.
+- [ ] The release-provenance gate confirms a clean deploy-relevant tree, local HEAD equals `origin/main`, and Vercel Production is a clean build of that exact commit.
 - [ ] GitHub authentication is restored, changes are pushed, and remote commit/CI state is read back.
 - Runtime completion gate (derived, not manually checked): `npm run qa:external` exits zero only after every checkbox above and the live production probe pass.
 
