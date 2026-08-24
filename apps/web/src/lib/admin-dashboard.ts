@@ -3,7 +3,26 @@ import { createServerClient } from "@routeplan/db";
 const DEFAULT_ORG_ID = "org-demo";
 
 function hasSupabaseConfig(): boolean {
-  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const values = [url, anonKey, serviceKey];
+  if (
+    values.some(
+      (value) =>
+        !value ||
+        value === "[SENSITIVE]" ||
+        value.toLowerCase().includes("placeholder"),
+    )
+  ) {
+    return false;
+  }
+  try {
+    const parsed = new URL(url as string);
+    return parsed.protocol === "https:" && parsed.hostname.endsWith(".supabase.co");
+  } catch {
+    return false;
+  }
 }
 
 type DashboardMetrics = {
@@ -83,7 +102,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       // WhatsApp conversations today (unique 'to' numbers with messages today)
       supabase
         .from("whatsapp_messages")
-        .select("to")
+        .select("to_number")
         .eq("organization_id", DEFAULT_ORG_ID)
         .gte("sent_at", today),
     ]);
@@ -99,7 +118,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
 
     // Count unique WhatsApp conversations (unique 'to' numbers)
     const uniqueConversations = new Set(
-      whatsappResult.data?.map((msg) => msg.to) || []
+      whatsappResult.data?.map((msg) => msg.to_number) || []
     ).size;
 
     return {
