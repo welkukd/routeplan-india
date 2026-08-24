@@ -38,7 +38,7 @@ const features = [
 const stats = [
   { value: "₹0", label: "Monthly Cost" },
   { value: "15min", label: "Setup Time" },
-  { value: "99.9%", label: "Uptime (Vercel)" },
+  { value: "24/7", label: "Web Access" },
   { value: "500MB", label: "DB Free Tier" },
 ];
 
@@ -86,7 +86,7 @@ export default function HomePage() {
               </a>
               <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm">
                 <Smartphone className="w-4 h-4" />
-                Start on WhatsApp
+                {whatsappReady ? "Start on WhatsApp" : "WhatsApp Pilot Pending"}
               </a>
             </div>
           </div>
@@ -125,11 +125,11 @@ export default function HomePage() {
                 className="btn-primary px-8 py-3 text-base gap-3 group"
               >
                 <Smartphone className="w-5 h-5" />
-                Start on WhatsApp
+                {whatsappReady ? "Start on WhatsApp" : "WhatsApp Pilot Pending"}
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </a>
-              <a href="#demo" className="btn-outline px-8 py-3 text-base">
-                Watch 2-min Demo
+              <a href="#features" className="btn-outline px-8 py-3 text-base">
+                Explore Features
               </a>
             </div>
 
@@ -141,15 +141,15 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-amber-400" />
-                <span>GST Compliant</span>
+                <span>GST-ready invoicing</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-amber-400" />
-                <span>DPDP Ready</span>
+                <span>DPDP-ready architecture</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-amber-400" />
-                <span>Mumbai Data Region</span>
+                <span>Mumbai region planned</span>
               </div>
             </div>
           </div>
@@ -302,21 +302,11 @@ export default function HomePage() {
                     className="btn-primary px-8 py-3 text-base gap-3 group"
                   >
                     <Smartphone className="w-5 h-5" />
-                    Open in WhatsApp
+                    {whatsappReady ? "Open in WhatsApp" : "Pilot Activation Pending"}
                     <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </a>
-                  <button
-                    className="btn-outline px-8 py-3 text-base gap-2"
-                    aria-label="Copy WhatsApp link"
-                  >
-                    <MessageSquare className="w-5 h-5" />
-                    Copy Link
-                  </button>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                By continuing, you agree to our <a href="#" className="underline hover:text-amber-400">Terms of Service</a> and <a href="#" className="underline hover:text-amber-400">Privacy Policy</a>
-              </p>
             </div>
 
             {/* Steps Side */}
@@ -432,7 +422,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> WhatsApp support</li>
               </ul>
               <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
-                Start Free
+                {whatsappReady ? "Start Free" : "Starter Pilot Pending"}
               </a>
             </div>
 
@@ -450,7 +440,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> Email + WhatsApp support</li>
               </ul>
               <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-primary w-full">
-                Upgrade to Growth
+                {whatsappReady ? "Upgrade to Growth" : "Growth Pilot Pending"}
               </a>
             </div>
 
@@ -465,7 +455,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> SLA guarantee</li>
               </ul>
               <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
-                Contact Sales
+                {whatsappReady ? "Contact Sales" : "Sales Pilot Pending"}
               </a>
             </div>
           </div>
@@ -481,7 +471,7 @@ export default function HomePage() {
               Ready to Automate Your Routes?
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-              Join 50+ Indian SMBs saving 15+ hours/week on routing. Start on WhatsApp in 2 minutes.
+              Cut manual route planning and dispatch from one WhatsApp-first workflow.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
@@ -491,7 +481,7 @@ export default function HomePage() {
                 className="btn-primary px-8 py-3 text-base gap-3"
               >
                 <Smartphone className="w-5 h-5" />
-                Start Free on WhatsApp
+                {whatsappReady ? "Start Free on WhatsApp" : "WhatsApp Pilot Pending"}
                 <ArrowRight className="w-5 h-5" />
               </a>
               <a href="#features" className="btn-outline px-8 py-3 text-base">
@@ -505,7 +495,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-border/50 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
@@ -522,23 +512,12 @@ export default function HomePage() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
                 <li><a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">API Docs</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Status</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
               </ul>
             </div>
           </div>
           <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2026 RoutePlan India. Free tier forever. GSTIN: 27AAAAA0000A1Z5
+              © 2026 RoutePlan India. Early-access pilot.
             </p>
             <div className="flex items-center gap-6">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">

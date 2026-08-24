@@ -3,17 +3,20 @@ import { expect, test } from "@playwright/test";
 test("landing page is honest and never exposes a placeholder WhatsApp link", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded", timeout: 60000 });
 
   await expect(
     page.getByRole("heading", { name: /Circuit for Indian SMBs/i }),
-  ).toBeVisible();
-  await expect(page.getByText(/Phase 1 Early Access/i)).toBeVisible();
+  ).toBeVisible({ timeout: 30000 });
+  await expect(page.getByText(/Phase 1 Early Access/i)).toBeVisible({
+    timeout: 30000,
+  });
 
   const hrefs = await page.locator("a").evaluateAll((anchors) =>
     anchors.map((anchor) => anchor.getAttribute("href") || ""),
   );
   expect(hrefs.some((href) => href.includes("XXXXXXXXXX"))).toBe(false);
+  expect(hrefs.filter((href) => href === "#")).toEqual([]);
 });
 
 test("WhatsApp webhook readiness reports missing configuration without secrets", async ({
