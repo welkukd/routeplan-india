@@ -51,6 +51,7 @@ A protected source-owner workstream changed the landing page while this pass was
 - `git ls-remote --heads origin main` fails: `could not read Username for 'https://github.com'`.
 - The unauthenticated repository API returns 404, consistent with a private or unavailable repository.
 - A GitHub blocker issue cannot be created until authentication is restored.
+- Ready-to-post issue content is preserved in `.hermes-supervisor/GITHUB_ISSUE_DRAFT.md`.
 
 ## Protected unrelated work
 

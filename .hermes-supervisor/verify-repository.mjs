@@ -8,6 +8,7 @@ const requiredFiles = [
   ".hermes-supervisor/ACCEPTANCE.md",
   ".hermes-supervisor/STATUS.md",
   ".hermes-supervisor/LATEST_REVIEW.md",
+  ".hermes-supervisor/GITHUB_ISSUE_DRAFT.md",
   ".hermes-supervisor/qa.sh",
   "docs/WHATSAPP.md",
   "supabase/migrations/001_initial_schema.sql",
