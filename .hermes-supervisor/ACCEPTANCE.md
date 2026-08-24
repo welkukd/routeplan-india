@@ -1,7 +1,7 @@
 # Acceptance — WhatsApp Webhook Production Readiness
 
-Last evidence refresh: 2026-08-24T01:16:13-0400
-Baseline commit: `0db7552d231464e9c21817692fa45135e99a7c21`
+Last evidence refresh: 2026-08-24T01:33:13-0400
+Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 
 ## A. Local implementation
 
