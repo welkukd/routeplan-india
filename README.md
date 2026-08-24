@@ -5,7 +5,7 @@ Phase 2: Freight marketplace.
 Phase 3: Embedded finance.
 
 ## Stack
-- **Frontend + API**: Next.js 15 + React 19 + Tailwind on Vercel
+- **Frontend + API**: Next.js 16.3.2 + React 19 + Tailwind on Vercel
 - **Database + Auth + Realtime**: Supabase (PostgreSQL, Mumbai region)
 - **WhatsApp**: Gupshup WhatsApp Business API
 - **Payments**: Razorpay (UPI, Cards, Subscriptions)
@@ -17,7 +17,7 @@ Phase 3: Embedded finance.
 ```
 /routeplan-india
   /apps
-    /web          # Next.js 15 + React 19 + Tailwind (Vercel)
+    /web          # Next.js 16.3 + React 19 + Tailwind (Vercel)
     /api          # Next.js API routes (same repo, Vercel functions)
   /packages
     /db           # Supabase client + types + migrations
@@ -49,7 +49,10 @@ SUPABASE_SERVICE_ROLE_KEY=
 # Gupshup WhatsApp
 GUPSHUP_API_KEY=
 GUPSHUP_APP_ID=
+GUPSHUP_APP_NAME=
+GUPSHUP_SOURCE_NUMBER=
 GUPSHUP_WEBHOOK_SECRET=
+NEXT_PUBLIC_WHATSAPP_NUMBER=
 
 # Razorpay
 RAZORPAY_KEY_ID=
@@ -65,12 +68,25 @@ RESEND_API_KEY=
 
 ## Development
 ```bash
-cd apps/web
 npm install
-npm run dev
+npm run typecheck
+npm test
+npm run lint
+npm run build
+npm run test:e2e
 ```
 
+See `docs/PHASE1_STATUS.md` for completed work and blockers. See `docs/WHATSAPP.md` for the provider contract and real-flow acceptance checklist.
+
 ## Deployment
-Push to main → Vercel auto-deploys.
-Supabase migrations run via CLI or dashboard.
-Gupshup webhook URL: `https://your-vercel-app.vercel.app/api/whatsapp/webhook` 
+
+Vercel project alias: `https://routeplan-india-zone-1433.vercel.app`.
+Requested alias: `https://routeplan-india.vercel.app`.
+
+The Gupshup callback must include the configured token:
+
+```text
+https://<production-host>/api/whatsapp/webhook?token=<GUPSHUP_WEBHOOK_SECRET>
+```
+
+Supabase migrations run via CLI or dashboard and must be verified by readback. The production integrations remain unavailable while Vercel environment values are placeholders.

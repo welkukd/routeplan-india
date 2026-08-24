@@ -8,11 +8,11 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=@routeplan/web",
-    "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces",
-    "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces",
-    "test:e2e": "npm run test:e2e --workspace=@routeplan/web",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspace=@routeplan/web --if-present",
     "db:push": "cd packages/db && npx supabase db push",
     "db:migrate": "cd packages/db && npx supabase migration new",
     "db:reset": "cd packages/db && npx supabase db reset"

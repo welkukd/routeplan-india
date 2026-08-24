@@ -43,6 +43,15 @@ const stats = [
 ];
 
 export default function HomePage() {
+  const whatsappNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, "");
+  const whatsappReady = /^91[6-9]\d{9}$/.test(whatsappNumber);
+  const whatsappMessage = encodeURIComponent(
+    "Hi RoutePlan, I want to automate my delivery routing via WhatsApp.",
+  );
+  const whatsappHref = whatsappReady
+    ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+    : "#onboarding";
+
   return (
     <main className="min-h-screen relative overflow-hidden">
       {/* Background atmosphere */}
@@ -75,7 +84,7 @@ export default function HomePage() {
               <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Pricing
               </a>
-              <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className="btn-primary text-sm">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm">
                 <Smartphone className="w-4 h-4" />
                 Start on WhatsApp
               </a>
@@ -91,7 +100,7 @@ export default function HomePage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-8 border-amber-500/20">
               <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-amber-300">Phase 1 Live — WhatsApp Routing for Indian SMBs</span>
+              <span className="text-sm font-medium text-amber-300">Phase 1 Early Access — WhatsApp Routing for Indian SMBs</span>
             </div>
 
             {/* Headline */}
@@ -104,13 +113,13 @@ export default function HomePage() {
             {/* Subheadline */}
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
               WhatsApp-first routing & dispatch SaaS for dairy, pharmacy, bakery & kirana.
-              Built for India. Free tier only. Live in 15 minutes.
+              Built for India. Join the production pilot as integrations activate.
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
               <a
-                href="https://wa.me/91XXXXXXXXXX?text=Hi%20RoutePlan%2C%20I%20want%20to%20automate%20my%20delivery%20routing%20via%20WhatsApp."
+                href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary px-8 py-3 text-base gap-3 group"
@@ -277,13 +286,17 @@ export default function HomePage() {
                 <div className="aspect-square w-64 mx-auto mb-4 rounded-lg bg-secondary flex items-center justify-center relative">
                   <div className="text-center">
                     <QrCode className="w-24 h-24 text-amber-400 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm text-muted-foreground">QR Code Placeholder</p>
-                    <p className="text-xs text-muted-foreground mt-1">wa.me/91XXXXXXXXXX</p>
+                    <p className="text-sm text-muted-foreground">
+                      {whatsappReady ? "Scan to open RoutePlan" : "WhatsApp pilot activation pending"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {whatsappReady ? `wa.me/${whatsappNumber}` : "No placeholder link exposed"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <a
-                    href="https://wa.me/91XXXXXXXXXX?text=Hi%20RoutePlan%2C%20I%20want%20to%20automate%20my%20delivery%20routing%20via%20WhatsApp."
+                    href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary px-8 py-3 text-base gap-3 group"
@@ -418,7 +431,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> GST invoices</li>
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> WhatsApp support</li>
               </ul>
-              <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
                 Start Free
               </a>
             </div>
@@ -436,7 +449,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> API access</li>
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> Email + WhatsApp support</li>
               </ul>
-              <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className="btn-primary w-full">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-primary w-full">
                 Upgrade to Growth
               </a>
             </div>
@@ -451,7 +464,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> Dedicated support</li>
                 <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle className="w-4 h-4 text-amber-400" /> SLA guarantee</li>
               </ul>
-              <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-outline w-full">
                 Contact Sales
               </a>
             </div>
@@ -472,7 +485,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="https://wa.me/91XXXXXXXXXX?text=Hi%20RoutePlan%2C%20I%20want%20to%20automate%20my%20delivery%20routing%20via%20WhatsApp."
+                href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary px-8 py-3 text-base gap-3"
@@ -534,7 +547,7 @@ export default function HomePage() {
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Truck className="w-5 h-5" />
               </a>
-              <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Smartphone className="w-5 h-5" />
               </a>
             </div>

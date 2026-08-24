@@ -25,7 +25,7 @@ npm run test
    - Resend
 
 ## Project Structure
-- `apps/web` - Next.js 15 frontend + API routes
+- `apps/web` - Next.js 16.3 frontend + API routes
 - `packages/db` - Supabase types & client
 - `packages/whatsapp` - Gupshup client & templates
 - `packages/routing` - VRP solver for Indian roads
@@ -55,18 +55,20 @@ This project is built by an autonomous agent running via cronjob every 15 minute
 See `.hermes/skills/autonomous-ai-agents/autonomous-builder/` for persona.
 
 ## Deployment
-1. Push to main → GitHub Actions runs CI/CD
-2. Vercel auto-deploys on successful build
-3. Supabase migrations run manually or via CLI
-4. Configure webhook URLs in Gupshup & Razorpay dashboards
+1. Run `npm run typecheck && npm test && npm run lint && npm run build && npm run test:e2e`
+2. Commit with a Git author who belongs to the Vercel team; otherwise Vercel blocks the deployment with `TEAM_ACCESS_REQUIRED`
+3. Deploy with `npx vercel --prod --yes --force`
+4. Apply and verify Supabase migrations separately
+5. Configure the provider callback only after real credentials are installed
 
 ## Webhook URLs (Production)
-- WhatsApp: `https://routeplan-india.vercel.app/api/whatsapp/webhook`
-- Razorpay: `https://routeplan-india.vercel.app/api/razorpay/webhook`
+- Readiness: `https://<production-host>/api/whatsapp/webhook`
+- WhatsApp callback: `https://<production-host>/api/whatsapp/webhook?token=<GUPSHUP_WEBHOOK_SECRET>`
+- Razorpay: `https://<production-host>/api/razorpay/webhook`
 
 ## Testing WhatsApp Locally
 Use ngrok: `ngrok http 3000`
-Update Gupshup webhook URL to `https://xxx.ngrok-free.app/api/whatsapp/webhook`
+Set Gupshup callback to `https://<ngrok-host>/api/whatsapp/webhook?token=<GUPSHUP_WEBHOOK_SECRET>`
 
 ## Architecture Decisions
 - Monorepo with npm workspaces

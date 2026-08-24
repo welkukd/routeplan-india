@@ -183,9 +183,20 @@ export type Database = {
           id: string;
           organization_id: string;
           template_id: string | null;
-          to: string;
-          from: string;
-          type: "template" | "text" | "image" | "document" | "location" | "interactive";
+          to_number: string;
+          from_number: string;
+          type:
+            | "template"
+            | "text"
+            | "image"
+            | "document"
+            | "audio"
+            | "video"
+            | "contact"
+            | "location"
+            | "interactive"
+            | "sticker"
+            | "reaction";
           content: Record<string, unknown>;
           status: "sent" | "delivered" | "read" | "failed";
           gupshup_message_id: string | null;
@@ -196,6 +207,23 @@ export type Database = {
         };
         Insert: Omit<Database["public"]["Tables"]["whatsapp_messages"]["Row"], "id">;
         Update: Partial<Database["public"]["Tables"]["whatsapp_messages"]["Insert"]>;
+      };
+      whatsapp_sessions: {
+        Row: {
+          id: string;
+          organization_id: string;
+          phone: string;
+          state: "awaiting_business_type" | "awaiting_stop" | "awaiting_driver";
+          context: Record<string, unknown>;
+          expires_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["whatsapp_sessions"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
+        Update: Partial<Database["public"]["Tables"]["whatsapp_sessions"]["Insert"]>;
       };
       subscriptions: {
         Row: {
