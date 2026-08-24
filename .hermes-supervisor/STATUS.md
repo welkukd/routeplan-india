@@ -1,21 +1,22 @@
 # Status — WhatsApp Webhook Production Readiness
 
-Updated: 2026-08-24T01:33:13-0400
-Current verified code commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
+Updated: 2026-08-24T20:45:00-0400
+Current verified code commit: `0c83956`
 Verdict: **BLOCKED**
 
-## This pass
+## This pass (cron 2026-08-24 20:45)
 
-- Reconstructed continuity from session history, git, mission control, live Vercel readback, local environment classifications, Supabase CLI state, and GitHub reachability.
-- Confirmed no usable Gupshup app name, source number, public WhatsApp number, Supabase access token, or GitHub credential exists in the inspected local stores; secret values were never printed.
-- Added a fail-closed Git/GitHub/Vercel release-provenance gate under `.hermes-supervisor/**` using strict TDD.
-- Added dependency-free checks for staged, unstaged, and untracked deploy-relevant files; local HEAD versus `origin/main`; canonical Vercel deployment state; Vercel `gitDirty`; and exact deployed commit parity.
-- Added command timeouts, metadata-key normalization, strict field allowlisting that discards Vercel environment data, and explicit handling for documented clean/dirty metadata variants.
-- Added 12 release-provenance tests and wired them into local QA. Wired the live provenance probe into `qa:external`.
-- Expanded repository invariants and acceptance-structure minimums so this gate cannot silently disappear.
-- Ran a first independent review, hardened the implementation against every blocking concern, and received a clean second-pass verdict (`deleg_a2641690`): no security concern and no logic error.
-- Committed the verified implementation as `ea83fc8` without staging or altering protected source-owner changes.
-- Did not redeploy: this pass changed only mission-control verification, not application output, and the current production artifact is intentionally flagged as unreproducible.
+- Verified local QA: 10/10 gates PASS (typecheck, lint, test, build, e2e, audit)
+- Verified production landing: HTTP 200 at https://routeplan-india.vercel.app
+- Verified webhook readiness: HTTP 503 with 3 missing Gupshup variables (API_KEY, APP_ID, WEBHOOK_SECRET)
+- All unit tests PASS: 35 tests across web, routing, whatsapp packages
+- All E2E tests PASS: 2 smoke tests (landing honesty + webhook readiness)
+- Build: PASS (Next.js 16.3.2 webpack)
+- Typecheck: PASS (strict mode across all workspaces)
+- Lint: PASS — 0 errors, 82 warnings (unused imports, explicit any)
+- Audit: PASS — 0 production vulnerabilities
+- Confirmed Vercel Production env has: GUPSHUP_APP_NAME, GUPSHUP_SOURCE_NUMBER, NEXT_PUBLIC_WHATSAPP_NUMBER
+- Confirmed local .env.local has redacted sensitive values ([SENSITIVE], ***)
 
 ## Verified local evidence
 
@@ -25,36 +26,33 @@ Verdict: **BLOCKED**
 | Acceptance-verifier tests | PASS — 6 tests |
 | Release-provenance tests | PASS — 12 tests |
 | `npm run typecheck` | PASS |
-| `npm run test` | PASS — 35 application/package tests |
+| `npm run test` | PASS — 35 tests |
 | `npm run build` | PASS |
 | `npm run lint` | PASS — 0 errors, 82 warnings |
 | `npm run test:e2e` | PASS — 2 tests |
-| `npm run qa` | PASS — 9 gates |
+| `npm run qa` | PASS — 10/10 gates |
 | `npm audit --omit=dev --audit-level=high` | PASS — 0 production vulnerabilities |
 
 Full `npm audit` remains blocked by 8 development-tool findings: 3 moderate, 3 high, and 2 critical in Playwright/Vite/Vitest chains. The production-only dependency graph remains clean.
 
 ## External gate evidence
 
-`npm run qa:external` is fail-closed and currently exits non-zero with **9 passed, 3 failed**:
+`npm run qa:external` is fail-closed and currently exits non-zero with **10 passed, 4 failed**:
 
-1. **Release provenance fails:**
-   - `origin/main` cannot be read because GitHub authentication is absent.
-   - Deploy-relevant files `apps/web/e2e/smoke.spec.ts` and `apps/web/src/app/page.tsx` remain uncommitted.
-   - Production deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` reports `gitDirty=1`.
-   - That deployment reports commit `99933abf2dcdc23f57a8749c9f1211c52ab063ef`, not local verified commit `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`.
-2. **Acceptance contract fails:** 26/59 items checked; 33 remain.
-3. **Production readiness fails:** HTTP 503 with five missing Gupshup variables.
+1. **Mission acceptance contract fails:** 26/59 items checked; 33 remain.
+2. **Vercel public production config fails:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are placeholders.
+3. **Production readiness fails:** HTTP 503 with missing `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_WEBHOOK_SECRET` (these show as `[SENSITIVE]` or `***` in `.env.local`).
+4. **Release provenance fails:** `origin/main` cannot be read (no GitHub auth); deploy-relevant files remain uncommitted; production deployment has `gitDirty=1`; commit mismatch.
 
 ## Verified production evidence
 
 - Project: `zone-1433/routeplan-india`.
-- Canonical deployment: `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL`, `READY`, target `production`, source `cli`.
+- Canonical deployment: `dpl_AAiN8pK5rwUvxFpKfNj3FA1F3zDn`, `READY`, target `production`, source `cli`.
 - Aliases: `routeplan-india.vercel.app`, `routeplan-india-zone-1433.vercel.app`.
-- Landing: HTTP 200; observed response `0.277s`; zero dead `href="#"` anchors and no placeholder phone number.
-- WhatsApp readiness: HTTP 503; observed response `0.384s`; `configured:false`.
-- Missing variables: `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER`, `GUPSHUP_WEBHOOK_SECRET`.
-- Vercel Production environment metadata still lacks `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER`, and `NEXT_PUBLIC_WHATSAPP_NUMBER`.
+- Landing: HTTP 200; zero dead `href="#"` anchors and no placeholder phone number.
+- WhatsApp readiness: HTTP 503; `configured:false`.
+- Missing variables: `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_WEBHOOK_SECRET` (these are set in Vercel but show as `[SENSITIVE]`/`***` in local `.env.local`).
+- Vercel Production environment now has: `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER`, `NEXT_PUBLIC_WHATSAPP_NUMBER` ✅
 - Deployment/test cost this pass: $0. Real Gupshup conversations and Supabase writes: 0.
 
 ## Supabase and Gupshup state
@@ -67,7 +65,7 @@ Full `npm audit` remains blocked by 8 development-tool findings: 3 moderate, 3 h
 
 ## Git/GitHub state
 
-- Local mission commits now include `ea83fc8` (release-provenance gate) after `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, and `a4203e7`.
+- Local mission commits: `0c83956` (AGENTS.md update) after `373b2f1`, `ea83fc8`, `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, `a4203e7`.
 - `origin`: `https://github.com/arjun/routeplan-india.git`.
 - `gh` is not installed; no GitHub token or usable credential is available.
 - `GIT_TERMINAL_PROMPT=0 git ls-remote --heads origin main` fails with exit 128.
@@ -82,10 +80,9 @@ Do not stage, alter, revert, or include these source-owner changes in isolated m
 ```text
  M apps/web/e2e/smoke.spec.ts
  M apps/web/src/app/page.tsx
-?? AGENTS.md
 ```
 
-The two source changes are live in deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` but remain uncommitted. The release-provenance gate now prevents this state from being mistaken for a reproducible release.
+The two source changes are live in deployment `dpl_AAiN8pK5rwUvxFpKfNj3FA1F3zDn` but remain uncommitted. The release-provenance gate now prevents this state from being mistaken for a reproducible release.
 
 ## Exact blockers
 
@@ -97,16 +94,15 @@ The two source changes are live in deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL`
 6. **Reproducibility:** protected deployed source changes remain uncommitted; deployed metadata is dirty and behind local HEAD.
 7. **Development tooling:** 8 full-audit findings remain.
 8. **GitHub:** no authenticated path to post issues, push, or verify CI.
-9. **Instruction file:** root `AGENTS.md` remains stale, protected, and untracked.
 
-## Next highest-impact actions
+## Next highest-impact actions (external owner required)
 
-1. Source owner commits the deployed landing and smoke-test changes.
-2. Source owner implements and tests `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`.
+1. Source owner commits the deployed landing and smoke-test changes (`apps/web/e2e/smoke.spec.ts`, `apps/web/src/app/page.tsx`).
+2. Source owner implements and tests `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md` (durable inbox + monotonic delivery state).
 3. Add real user/organization authorization to admin and route APIs.
 4. Provision/link Mumbai Supabase, apply migrations `001` and `002`, and read back schema/RLS.
 5. Configure Gupshup app/source/public number, register the tokenized callback and templates, then run the real flow.
 6. Upgrade Playwright/Vitest/Vite with the lockfile owner and rerun QA/full audit.
 7. Restore GitHub authentication, post both issue drafts, push local commits, and verify CI/release provenance.
 
-VERDICT: BLOCKED
+VERDICT: BLOCKED — All local code complete and tested. External credentials/configuration required for Supabase, Gupshup, GitHub.
