@@ -1,7 +1,7 @@
 # Acceptance — WhatsApp Webhook Production Readiness
 
-Last evidence refresh: 2026-08-24T00:00:27-04:00
-Baseline commit: `9b5c0e47ab8cec4629ea10106a35775867727f3d`
+Last evidence refresh: 2026-08-24T00:08:31-04:00
+Baseline commit: `99933abf2dcdc23f57a8749c9f1211c52ab063ef`
 
 ## A. Local implementation
 
@@ -19,15 +19,17 @@ Baseline commit: `9b5c0e47ab8cec4629ea10106a35775867727f3d`
 - [x] `npm run lint` exits zero with 0 errors; 82 warnings remain.
 - [x] `npm run test:e2e` exits zero: 2 smoke tests pass.
 - [x] `npm run qa` exits zero: 7 gates pass.
-- [x] Fresh independent review finds no critical/high-severity defect.
+- [x] Fresh independent review of mission control and the landing cleanup finds no critical/high-severity defect.
+- [ ] Fresh independent review of the full production webhook finds no critical/high-severity defect. Current high-severity reliability follow-ups are tracked in `WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`.
 
 ## B. Production deployment
 
 - [x] Vercel project `zone-1433/routeplan-india` is linked.
-- [x] Deployment `dpl_W2hYRpq9zE3NLhuxCxj33GMLdesb` is `READY`.
+- [x] Deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY`.
 - [x] Both production aliases resolve and the landing page returns HTTP 200.
 - [x] Production landing page has no dead `href="#"` controls and no unverified `99.9%` claim.
 - [x] Production-targeted Playwright smoke tests pass: 2 tests.
+- [x] Live desktop 1440px and mobile 390px checks show no overflow, broken images, or console errors.
 - [ ] Production readiness returns HTTP 200 with `configured:true` and an empty `missing` array.
 - [ ] `GUPSHUP_APP_NAME` is configured in Vercel Production.
 - [ ] `GUPSHUP_SOURCE_NUMBER` is configured in `91XXXXXXXXXX` format.
@@ -66,6 +68,9 @@ Baseline commit: `9b5c0e47ab8cec4629ea10106a35775867727f3d`
 ## F. Security and operations
 
 - [ ] Admin and route APIs have real user/organization authorization before broad pilot access.
+- [ ] Gupshup inbound IP ranges are obtained from provider support and allowlisted before broad production access.
+- [ ] Every authenticated callback is durably retained before `202`; post-ack failures retry automatically.
+- [ ] Delivery/read status uses provider event timestamps and cannot regress when events arrive out of order.
 - [x] No local env or Vercel directory is tracked by git.
 - [x] Readiness output names missing variables but does not expose values.
 - [x] Production dependency audit is clean: `npm audit --omit=dev` reports 0 vulnerabilities.
@@ -76,4 +81,4 @@ Baseline commit: `9b5c0e47ab8cec4629ea10106a35775867727f3d`
 
 ## Current verdict
 
-`BLOCKED` for the real production flow: provider credentials/configuration and Supabase project access are unavailable. The deployed landing fix is not yet reproducible from git, and development-tool vulnerabilities remain.
+`BLOCKED` for the real production flow: provider credentials/configuration and Supabase project access are unavailable. Durable post-ack retry, monotonic delivery-state handling, API authorization, reproducible source, GitHub synchronization, and development-tool upgrades also remain.

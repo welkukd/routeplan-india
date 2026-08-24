@@ -10,7 +10,7 @@ The application and webhook code are deployed, but the production WhatsApp flow 
 
 ## Current evidence
 
-- Vercel deployment `dpl_W2hYRpq9zE3NLhuxCxj33GMLdesb` is `READY`.
+- Vercel deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY`.
 - `https://routeplan-india.vercel.app/` returns HTTP 200.
 - `GET /api/whatsapp/webhook` returns HTTP 503 with `configured:false`.
 - Readiness reports missing `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER`, and `GUPSHUP_WEBHOOK_SECRET`.

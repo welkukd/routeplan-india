@@ -1,8 +1,8 @@
 # WhatsApp Integration — Gupshup Self-Serve V2
 
-Status: code-complete, provider/database configuration pending. The Vercel project is linked and the production alias is live, but `GET /api/whatsapp/webhook` returns `503 configured:false` until real provider values replace placeholders and missing variables.
+Status: local implementation and Vercel landing deployment are verified; provider/database configuration remains blocked. Deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY` and aliased to `https://routeplan-india.vercel.app`, but `GET /api/whatsapp/webhook` returns `503 configured:false` until real provider values replace placeholders and missing variables.
 
-Durable acceptance evidence and deterministic gates live under `.hermes-supervisor/`. Run `npm run qa` locally and `npm run qa:external` before claiming production readiness.
+Durable acceptance evidence and deterministic gates live under `.hermes-supervisor/`. Run `npm run qa` locally and `npm run qa:external` before claiming production readiness. The external gate intentionally remains non-zero while the webhook reports missing configuration.
 
 ## Implemented architecture
 
@@ -41,13 +41,17 @@ Authoritative provider references:
 
 ## Callback authentication
 
-Gupshup's Self-Serve webhook documentation does not document the previously scaffolded `x-gupshup-signature` HMAC contract. RoutePlan therefore uses a project-owned secret token. Configure the callback as:
+Gupshup's Self-Serve webhook documentation does not publish an `x-gupshup-signature` HMAC contract. RoutePlan therefore adds a project-owned secret token. Configure the callback as:
 
 ```text
 https://<production-host>/api/whatsapp/webhook?token=<GUPSHUP_WEBHOOK_SECRET>
 ```
 
-The handler also accepts the same secret in `X-Gupshup-Webhook-Secret` or `Authorization: Bearer ...` for subscription products that support custom headers. Values are compared with `timingSafeEqual`.
+The handler also accepts the same secret in `X-Gupshup-Webhook-Secret` or an `Authorization: Bearer <same-secret>` header for subscription products that support custom headers. Values are compared with `timingSafeEqual`. Gupshup's official security guidance recommends allowlisting its inbound request IPs; obtain the current ranges through provider support before broad production access.
+
+The V2 envelope's `app` field is the Gupshup **app name**, so RoutePlan validates it against `GUPSHUP_APP_NAME`. `GUPSHUP_APP_ID` is separately used for the tenant database lookup and provider template-management endpoints.
+
+Callback-ID uniqueness prevents duplicate replies, but it is not a substitute for durable post-ack retry. The current `after()` path can lose work if processing fails after the empty `202`; delivery callbacks can also arrive out of order. The source-owner design and test contract are tracked in `.hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`. Do not call the webhook production-complete until that follow-up and a real sandbox flow are verified.
 
 ## Required environment
 
