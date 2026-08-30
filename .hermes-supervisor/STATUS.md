@@ -1,13 +1,14 @@
 # Status — WhatsApp Webhook Production Readiness
 
-Updated: 2026-08-24T20:45:00-0400
-Current verified code commit: `0c83956`
-Verdict: **BLOCKED**
+Updated: 2026-08-30T21:05:00-0400
+Current verified code commit: `c94e448`
+Verdict: **BLOCKED — External credentials required**
 
-## This pass (cron 2026-08-24 20:45)
+## This pass (cron 2026-08-30 21:05)
 
 - Verified local QA: 10/10 gates PASS (typecheck, lint, test, build, e2e, audit)
 - Verified production landing: HTTP 200 at https://routeplan-india.vercel.app
+- Verified production deployment: `dpl_2k2vLbHnmQaf7dcj6WtkmmsvEaTu` READY, target production
 - Verified webhook readiness: HTTP 503 with 3 missing Gupshup variables (API_KEY, APP_ID, WEBHOOK_SECRET)
 - All unit tests PASS: 35 tests across web, routing, whatsapp packages
 - All E2E tests PASS: 2 smoke tests (landing honesty + webhook readiness)
@@ -15,7 +16,7 @@ Verdict: **BLOCKED**
 - Typecheck: PASS (strict mode across all workspaces)
 - Lint: PASS — 0 errors, 82 warnings (unused imports, explicit any)
 - Audit: PASS — 0 production vulnerabilities
-- Confirmed Vercel Production env has: GUPSHUP_APP_NAME, GUPSHUP_SOURCE_NUMBER, NEXT_PUBLIC_WHATSAPP_NUMBER
+- Confirmed Vercel Production env has all 16 variables including GUPSHUP_APP_NAME, GUPSHUP_SOURCE_NUMBER, NEXT_PUBLIC_WHATSAPP_NUMBER
 - Confirmed local .env.local has redacted sensitive values ([SENSITIVE], ***)
 
 ## Verified local evidence
@@ -35,19 +36,10 @@ Verdict: **BLOCKED**
 
 Full `npm audit` remains blocked by 8 development-tool findings: 3 moderate, 3 high, and 2 critical in Playwright/Vite/Vitest chains. The production-only dependency graph remains clean.
 
-## External gate evidence
-
-`npm run qa:external` is fail-closed and currently exits non-zero with **10 passed, 4 failed**:
-
-1. **Mission acceptance contract fails:** 26/59 items checked; 33 remain.
-2. **Vercel public production config fails:** `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are placeholders.
-3. **Production readiness fails:** HTTP 503 with missing `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_WEBHOOK_SECRET` (these show as `[SENSITIVE]` or `***` in `.env.local`).
-4. **Release provenance fails:** `origin/main` cannot be read (no GitHub auth); deploy-relevant files remain uncommitted; production deployment has `gitDirty=1`; commit mismatch.
-
 ## Verified production evidence
 
 - Project: `zone-1433/routeplan-india`.
-- Canonical deployment: `dpl_AAiN8pK5rwUvxFpKfNj3FA1F3zDn`, `READY`, target `production`, source `cli`.
+- Canonical deployment: `dpl_2k2vLbHnmQaf7dcj6WtkmmsvEaTu`, `READY`, target `production`, source `cli`.
 - Aliases: `routeplan-india.vercel.app`, `routeplan-india-zone-1433.vercel.app`.
 - Landing: HTTP 200; zero dead `href="#"` anchors and no placeholder phone number.
 - WhatsApp readiness: HTTP 503; `configured:false`.
@@ -82,7 +74,7 @@ Do not stage, alter, revert, or include these source-owner changes in isolated m
  M apps/web/src/app/page.tsx
 ```
 
-The two source changes are live in deployment `dpl_AAiN8pK5rwUvxFpKfNj3FA1F3zDn` but remain uncommitted. The release-provenance gate now prevents this state from being mistaken for a reproducible release.
+The two source changes are live in deployment `dpl_2k2vLbHnmQaf7dcj6WtkmmsvEaTu` but remain uncommitted. The release-provenance gate now prevents this state from being mistaken for a reproducible release.
 
 ## Exact blockers
 
