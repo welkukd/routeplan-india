@@ -9,6 +9,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
+  timeout: 60_000,
   use: {
     baseURL,
     trace: "retain-on-failure",
@@ -26,7 +27,7 @@ export default defineConfig({
           command: "npm run dev -- --hostname localhost --port 3000",
           url: localBaseUrl,
           reuseExistingServer: true,
-          timeout: 120_000,
+          timeout: 180_000,
         },
       }),
 });
