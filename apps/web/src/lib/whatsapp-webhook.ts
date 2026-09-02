@@ -50,7 +50,8 @@ export interface WhatsAppWebhookRepository {
     messageId: string,
     status: "sent" | "delivered" | "read" | "failed",
     errorMessage: string | null,
-  ): Promise<void>;
+    providerTimestamp?: number,
+  ): Promise<boolean>;
   findActor(
     organizationId: string,
     phone: string,
@@ -281,11 +282,16 @@ export async function processGupshupWebhook(
       );
       return { acknowledged: true, action: "event_ignored" };
     }
+    // Extract provider timestamp from payload (seconds since epoch)
+    const providerTimestamp = statusEvent.payload.payload?.ts
+      ? Number(statusEvent.payload.payload.ts) * 1000
+      : event.timestamp;
     await repository.updateMessageStatus(
       statusOrganization.id,
       messageId,
       status,
       status === "failed" ? failedReason(statusEvent.payload.payload) : null,
+      providerTimestamp,
     );
     return { acknowledged: true, action: "status_updated" };
   }

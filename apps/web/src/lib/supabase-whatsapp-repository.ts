@@ -57,17 +57,72 @@ export function createSupabaseWhatsAppRepository(
       return Boolean(data?.id);
     },
 
-    async updateMessageStatus(organizationId, messageId, status, errorMessage) {
-      const timestamp = new Date().toISOString();
+    async updateMessageStatus(organizationId: string, messageId: string, status: "sent" | "delivered" | "read" | "failed", errorMessage: string | null, providerTimestamp?: number): Promise<boolean> {
+      // Monotonic status rank: sent(1) < delivered(2) < read(3) < failed(4)
+      // Only upgrade status if new status rank >= current status rank
+      const statusRank = (s: string): number => {
+        switch (s) {
+          case "sent": return 1;
+          case "delivered": return 2;
+          case "read": return 3;
+          case "failed": return 4;
+          default: return 0;
+        }
+      };
+
+      // First, get current status to enforce monotonic ordering
+      const { data: currentMsg, error: fetchError } = await supabase
+        .from("whatsapp_messages")
+        .select("status, provider_delivered_at, provider_read_at, delivered_at, read_at")
+        .eq("organization_id", organizationId)
+        .eq("gupshup_message_id", messageId)
+        .maybeSingle();
+      throwIfError(fetchError);
+
+      if (!currentMsg) {
+        // Message not found - still try to update (may be out-of-order delivery event)
+        console.warn("Gupshup: updateMessageStatus for unknown messageId", { organizationId, messageId });
+      } else if (currentMsg.status && statusRank(status) < statusRank(currentMsg.status)) {
+        // New status is lower rank - don't downgrade
+        console.log("Gupshup: ignoring status downgrade", {
+          organizationId,
+          messageId,
+          currentStatus: currentMsg.status,
+          newStatus: status,
+        });
+        return false;
+      }
+
+      const providerTs = providerTimestamp ? new Date(providerTimestamp).toISOString() : new Date().toISOString();
       const update: Record<string, unknown> = {
         status,
         error_message: errorMessage,
       };
-      if (status === "delivered") update.delivered_at = timestamp;
-      if (status === "read") {
-        update.delivered_at = timestamp;
-        update.read_at = timestamp;
+
+      // Set provider timestamps based on status, preserving earliest values
+      if (status === "delivered") {
+        // Only set provider_delivered_at if not already set (preserve earliest)
+        if (!currentMsg?.provider_delivered_at) {
+          update.provider_delivered_at = providerTs;
+        }
+        update.delivered_at = providerTs;
       }
+      if (status === "read") {
+        // Set provider_read_at if not already set
+        if (!currentMsg?.provider_read_at) {
+          update.provider_read_at = providerTs;
+        }
+        update.read_at = providerTs;
+        // If read implies delivery and no delivery timestamp exists, set it once
+        if (!currentMsg?.provider_delivered_at && !currentMsg?.delivered_at) {
+          update.provider_delivered_at = providerTs;
+          update.delivered_at = providerTs;
+        }
+      }
+      if (status === "failed") {
+        update.provider_failed_at = providerTs;
+      }
+
       const { error } = await supabase
         .from("whatsapp_messages")
         .update(update)
@@ -76,6 +131,7 @@ export function createSupabaseWhatsAppRepository(
         .select("id")
         .maybeSingle();
       throwIfError(error);
+      return true;
     },
 
     async findActor(organizationId, phone) {

@@ -59,7 +59,7 @@ npm run dev
 
 ## Current Mission: WhatsApp Webhook Production-Readiness
 
-**Status**: IN PROGRESS (Local Development Phase)
+**Status**: **LOCAL IMPLEMENTATION COMPLETE** — External blockers remain
 
 **Mission Control**: `.hermes-supervisor/{GOAL,ACCEPTANCE,STATUS,qa.sh}`
 
@@ -79,6 +79,17 @@ npm run dev
    - Routes text/interactive/location to handlers
    - Updates message status on delivery receipts
 
+3. **Supabase Repository** (`apps/web/src/lib/supabase-whatsapp-repository.ts`)
+   - Full CRUD for organizations, customers, drivers, sessions, messages
+   - Idempotent upserts with unique constraints
+   - RLS-compatible service-role operations
+
+4. **Webhook Processing Logic** (`apps/web/src/lib/whatsapp-webhook.ts`)
+   - Complete onboarding flow: business type → stops → drivers → route generation
+   - Location handling with pincode extraction
+   - Driver parsing with validation
+   - Duplicate detection via unique index
+
 ### External Blockers (Cannot Complete in Code)
 
 | Blocker | Required For | Evidence Needed |
@@ -97,7 +108,7 @@ npm run dev
 - ✅ Vercel deployment working (landing page live at https://routeplan-india.vercel.app)
 - ❌ End-to-end message flow verified
 
-### Local Readiness Status (as of 2026-08-24)
+### Local Readiness Status (as of 2026-08-31)
 
 - ✅ `npm run typecheck` — PASS
 - ✅ `npm run test` — PASS (35 tests)
@@ -105,9 +116,9 @@ npm run dev
 - ✅ `npm run lint` — PASS (0 errors, 82 warnings)
 - ✅ `npm run test:e2e` — PASS (2 smoke tests)
 - ✅ `npm run qa` — PASS (10/10 gates)
-- ✅ Local commit clean: `c94e448` (STATUS update + QA verification)
+- ✅ Local commit clean: `e33ff82` (STATUS update + QA verification)
 - ❌ GitHub push blocked (no gh CLI / token)
-- ❌ Vercel Production env: `GUPSHUP_APP_NAME`, `GUPSHUP_SOURCE_NUMBER` missing
+- ❌ Vercel Production env: `GUPSHUP_API_KEY`, `GUPSHUP_APP_ID`, `GUPSHUP_WEBHOOK_SECRET` are sensitive (present but not readable locally)
 - ❌ Supabase Mumbai project not linked
 
 ## File Ownership Rules (Isolated)

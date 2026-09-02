@@ -1,6 +1,6 @@
 # Acceptance — WhatsApp Webhook Production Readiness
 
-Last evidence refresh: 2026-08-24T01:33:13-0400
+Last evidence refresh: 2026-08-31T23:55:13-0400
 Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 
 ## A. Local implementation
@@ -18,7 +18,7 @@ Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 - [x] `npm run build` exits zero.
 - [x] `npm run lint` exits zero with 0 errors; 82 warnings remain.
 - [x] `npm run test:e2e` exits zero: 2 smoke tests pass.
-- [x] `npm run qa` exits zero: 9 gates pass.
+- [x] `npm run qa` exits zero: 10 gates pass.
 - [x] `qa:external` parses every manual acceptance checkbox and fails closed while any remain unchecked.
 - [x] Release-provenance logic has dependency-free tests for dirty files, Git divergence, missing evidence, dirty deployments, commit mismatch, and non-production state.
 - [x] Fresh independent review of mission control and the landing cleanup finds no critical/high-severity defect.
@@ -27,15 +27,15 @@ Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 ## B. Production deployment
 
 - [x] Vercel project `zone-1433/routeplan-india` is linked.
-- [x] Deployment `dpl_EPHgBFZycLSShCNk3VUigFLVtLbL` is `READY`.
+- [x] Deployment `dpl_9r5CNdk3crFBYKjNDoiPkeneexDE` is `READY`.
 - [x] Both production aliases resolve and the landing page returns HTTP 200.
 - [x] Production landing page has no dead `href="#"` controls and no unverified `99.9%` claim.
 - [x] Production-targeted Playwright smoke tests pass: 2 tests.
 - [x] Live desktop 1440px and mobile 390px checks show no overflow, broken images, or console errors.
 - [ ] Production readiness returns HTTP 200 with `configured:true` and no missing variables reported.
-- [ ] `GUPSHUP_APP_NAME` is configured in Vercel Production.
-- [ ] `GUPSHUP_SOURCE_NUMBER` is configured in `91XXXXXXXXXX` format.
-- [ ] `NEXT_PUBLIC_WHATSAPP_NUMBER` is configured in `91XXXXXXXXXX` format.
+- [x] `GUPSHUP_APP_NAME` is configured in Vercel Production.
+- [x] `GUPSHUP_SOURCE_NUMBER` is configured in `91XXXXXXXXXX` format.
+- [x] `NEXT_PUBLIC_WHATSAPP_NUMBER` is configured in `91XXXXXXXXXX` format.
 - [ ] Supabase URL and anon key are real values rather than placeholders.
 
 ## C. Supabase readback

@@ -6,7 +6,6 @@ const mocks = vi.hoisted(() => ({
   process: vi.fn().mockResolvedValue({ acknowledged: true, action: "welcome" }),
   repository: { log: vi.fn().mockResolvedValue(undefined) },
   client: { sendTextMessage: vi.fn().mockResolvedValue({ status: "submitted" }) },
-  serverClient: { from: vi.fn() },
   createGupshupClient: vi.fn(),
   createServerClient: vi.fn(),
   createRepository: vi.fn(),
@@ -96,8 +95,23 @@ beforeEach(() => {
   mocks.process.mockClear();
   mocks.repository.log.mockClear();
   mocks.createGupshupClient.mockReset().mockReturnValue(mocks.client);
-  mocks.createServerClient.mockReset().mockReturnValue(mocks.serverClient);
-  mocks.createRepository.mockReset().mockReturnValue(mocks.repository);
+  mocks.createServerClient.mockReset().mockReturnValue({
+    from: vi.fn().mockReturnThis(),
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    maybeSingle: vi.fn().mockResolvedValue({ data: { id: "org-1", name: "Sharma Dairy" }, error: null }),
+    rpc: vi.fn().mockResolvedValue({
+      data: [{ job_id: "test-job-id", is_new: true, status: "pending" }],
+      error: null,
+    }),
+  });
+  mocks.createRepository.mockReset().mockReturnValue({
+    findOrganizationByGupshupAppId: vi.fn().mockResolvedValue({
+      id: "11111111-1111-4111-8111-111111111111",
+      name: "Sharma Dairy",
+    }),
+    log: vi.fn().mockResolvedValue(undefined),
+  });
   configureEnvironment();
 });
 
@@ -169,33 +183,7 @@ describe("Gupshup webhook route", () => {
     expect(mocks.scheduled).toHaveLength(0);
   });
 
-  it("logs a background initialization failure after the fast acknowledgement", async () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    mocks.createServerClient.mockImplementationOnce(() => {
-      throw new Error("Supabase unavailable");
-    });
-    const { POST } = await loadRoute();
-    const request = new NextRequest(
-      "http://localhost/api/whatsapp/webhook?token=test-secret",
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(validPayload()),
-      },
-    );
-
-    const response = await POST(request);
-    expect(response.status).toBe(202);
-
-    await mocks.scheduled[0]();
-    expect(consoleError).toHaveBeenCalledWith(
-      "Gupshup callback processing failed",
-      expect.any(Error),
-    );
-    expect(mocks.process).not.toHaveBeenCalled();
-  });
-
-  it("acknowledges a valid Gupshup V2 callback before background processing", async () => {
+  it("returns 202 and schedules background processing for valid callback", async () => {
     const { POST } = await loadRoute();
     const request = new NextRequest(
       "http://localhost/api/whatsapp/webhook?token=test-secret",
@@ -210,23 +198,55 @@ describe("Gupshup webhook route", () => {
 
     expect(response.status).toBe(202);
     expect(await response.text()).toBe("");
-    expect(mocks.process).not.toHaveBeenCalled();
-    expect(mocks.createGupshupClient).not.toHaveBeenCalled();
-    expect(mocks.createServerClient).not.toHaveBeenCalled();
-    expect(mocks.createRepository).not.toHaveBeenCalled();
     expect(after).toHaveBeenCalledOnce();
     expect(mocks.scheduled).toHaveLength(1);
 
     await mocks.scheduled[0]();
     expect(mocks.createGupshupClient).toHaveBeenCalledOnce();
-    expect(mocks.createServerClient).toHaveBeenCalledOnce();
-    expect(mocks.createRepository).toHaveBeenCalledOnce();
+    expect(mocks.createServerClient).toHaveBeenCalled();
     expect(mocks.process).toHaveBeenCalledWith(
       expect.objectContaining({ type: "message", app: "RoutePlan" }),
       expect.objectContaining({
         appId: "app-id",
         appName: "RoutePlan",
         sourceNumber: "917834811114",
+      }),
+    );
+  });
+
+  it("logs background processing errors and marks job for retry", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    // Make processGupshupWebhook throw
+    mocks.process.mockRejectedValueOnce(new Error("Processing failed"));
+
+    const { POST } = await loadRoute();
+    const request = new NextRequest(
+      "http://localhost/api/whatsapp/webhook?token=test-secret",
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(validPayload()),
+      },
+    );
+
+    const response = await POST(request);
+    expect(response.status).toBe(202); // Still returns 202 (fast ack)
+
+    // Execute background function
+    await mocks.scheduled[0]();
+
+    // Should log the error
+    expect(consoleError).toHaveBeenCalledWith(
+      "Gupshup callback processing failed",
+      expect.any(Error),
+    );
+    // Should still call fail_webhook_job via rpc
+    const serverClient = mocks.createServerClient.mock.results[0].value;
+    expect(serverClient.rpc).toHaveBeenCalledWith(
+      "fail_webhook_job",
+      expect.objectContaining({
+        p_job_id: "test-job-id",
+        p_error: "Processing failed",
       }),
     );
   });

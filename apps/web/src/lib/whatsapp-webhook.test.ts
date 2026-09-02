@@ -235,6 +235,7 @@ describe("processGupshupWebhook", () => {
       "gupshup-outbound-1",
       "delivered",
       null,
+      1_787_534_000_000, // provider timestamp in ms
     );
     expect(dependencies.client.sendTextMessage).not.toHaveBeenCalled();
   });
