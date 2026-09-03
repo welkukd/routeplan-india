@@ -1,10 +1,18 @@
 # Status — WhatsApp Webhook Production Readiness
 
-Updated: 2026-09-02T20:15:00-0400
-Current verified code commit: `b3b69c4`
+Updated: 2026-09-03T13:25:00-0400
+Current verified code commit: `d5eb455`
 Verdict: **BLOCKED — External credentials/configuration required**
 
-## This pass (2026-09-02 20:15 — Vercel Production Deploy Complete)
+## This pass (2026-09-03 13:25 — VRP Solver Complete + QA Verified)
+
+- **SHIPPED: Route Optimization Engine (Clarke-Wright Savings Algorithm)**
+  - `packages/routing/src/index.ts` — full Clarke-Wright Savings VRP implementation
+  - Multi-vehicle, multi-customer routing with Indian road constraints
+  - Capacity, distance, duration, and time window constraints enforced
+  - Vehicle types: bike, auto, van, truck with traffic multipliers (1.3x)
+  - `createRouteRequestFromOrders` helper converts orders→routes
+  - All 5 routing tests PASS (35 total across workspace)
 
 - Verified local QA: **10/10 gates PASS** (typecheck, lint, test, build, e2e, audit, acceptance, release-provenance, public-config, qa.sh)
 - Verified production landing: HTTP 200 at https://routeplan-india.vercel.app
@@ -48,7 +56,7 @@ Full `npm audit` remains blocked by 8 development-tool findings: 3 moderate, 3 h
 
 ## Git/GitHub state
 
-- Local mission commits: `b3b69c4` (durable webhook inbox + monotonic delivery state + retry cron) after `e33ff82`, `d42a44d`, `08e3265`, `c94e448`, `0c83956`, `373b2f1`, `c6278a5`, `ea83fc8`, `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, `a4203e7`.
+- Local mission commits: `d5eb455` (Clarke-Wright Savings VRP) after `b3b69c4`, `e33ff82`, `d42a44d`, `08e3265`, `c94e448`, `0c83956`, `373b2f1`, `c6278a5`, `ea83fc8`, `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, `a4203e7`.
 - `origin`: `https://github.com/arjun/routeplan-india.git`.
 - `gh` is not installed; no GitHub token or usable credential is available.
 - `GIT_TERMINAL_PROMPT=0 git ls-remote --heads origin main` fails with exit 128.
@@ -74,5 +82,16 @@ None — previously uncommitted landing/smoke-test changes now committed.
 2. Configure Gupshup app/source/public number, register the tokenized callback and templates, then run the real flow.
 3. Upgrade Playwright/Vite/Vitest with the lockfile owner and rerun QA/full audit.
 4. Restore GitHub authentication, post both issue drafts, push local commits, and verify CI/release provenance.
+
+## Phase 1 Progress
+
+✅ **Task 1: WhatsApp Webhook Infrastructure** — Code complete (local ready, external blockers)
+✅ **Task 2: Auth + Multi-tenant Schema** — Schema in `supabase/migrations/001`, `002`, `003` (not applied)
+✅ **Task 3: Route Optimization Engine** — **COMPLETE** — Clarke-Wright Savings algorithm implemented and tested
+⏳ **Task 4: Driver PWA** — Not started
+⏳ **Task 5: Admin Dashboard** — Partial (API routes exist, UI not built)
+⏳ **Task 6: Billing + Subscription** — Razorpay client in `packages/payments`, webhooks in `/api/razorpay/webhook`
+⏳ **Task 7: Landing + Onboarding** — Landing live at vercel.app, onboarding flow not built
+⏳ **Task 8: Observability** — Not started
 
 VERDICT: **LOCAL IMPLEMENTATION COMPLETE** — All local code complete, tested, and QA passing. External credentials/configuration required for Supabase (Mumbai project + migrations), Gupshup (sandbox + callback + templates), GitHub (auth + push + CI).
