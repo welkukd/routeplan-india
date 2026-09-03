@@ -73,7 +73,7 @@ describe("VRP Solver", () => {
 
     expect(result.routes.length).toBe(1);
     expect(result.routes[0].stops.length).toBeGreaterThan(2); // depot + customers + return
-    expect(result.summary.locationsServed).toBe(1); // Current algorithm limitation - TODO: fix to serve both
+    expect(result.summary.locationsServed).toBe(2); // Both customers should be served now
     expect(result.summary.vehiclesUsed).toBe(1);
     expect(result.metadata.computationTimeMs).toBeLessThan(5000);
   });
