@@ -27,7 +27,7 @@ Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 ## B. Production deployment
 
 - [x] Vercel project `zone-1433/routeplan-india` is linked.
-- [x] Deployment `dpl_9r5CNdk3crFBYKjNDoiPkeneexDE` is `READY`.
+- [x] Deployment `dpl_382ibg44Fi8FDTvduvYDezxKmQNy` is `READY`.
 - [x] Both production aliases resolve and the landing page returns HTTP 200.
 - [x] Production landing page has no dead `href="#"` controls and no unverified `99.9%` claim.
 - [x] Production-targeted Playwright smoke tests pass: 2 tests.
@@ -37,6 +37,7 @@ Baseline commit: `ea83fc8b7baf2ebb2521462d7aaeec23a0e9a876`
 - [x] `GUPSHUP_SOURCE_NUMBER` is configured in `91XXXXXXXXXX` format.
 - [x] `NEXT_PUBLIC_WHATSAPP_NUMBER` is configured in `91XXXXXXXXXX` format.
 - [ ] Supabase URL and anon key are real values rather than placeholders.
+- [x] Cron endpoints deployed: `/api/cron/retry-webhook-jobs` (daily 6 AM) and `/api/cron/daily-routes` (daily 5 AM) responding.
 
 ## C. Supabase readback
 
