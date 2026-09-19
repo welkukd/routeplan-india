@@ -219,3 +219,5 @@ https://your-domain.com/api/whatsapp/webhook?token=YOUR_VERIFICATION_TOKEN
 3. **Deterministic QA** — `qa.sh` must pass before claiming local readiness
 4. **No secrets in docs** — `.env.example` has placeholders only; real values in `.env.local` (gitignored)
 5. **Evidence-based AGENTS.md** — Update only from actual repo inspection, not assumptions
+
+# DONE - 2026-09-19 16:51:03
