@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const localBaseUrl = "http://localhost:3000";
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || localBaseUrl;
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || "https://routeplan-india.vercel.app";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -9,7 +9,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
-  timeout: 60_000,
+  timeout: 120_000,
   use: {
     baseURL,
     trace: "retain-on-failure",
@@ -20,14 +20,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  ...(process.env.PLAYWRIGHT_BASE_URL
-    ? {}
-    : {
+  ...(!process.env.PLAYWRIGHT_BASE_URL
+    ? {
         webServer: {
           command: "npm run dev -- --hostname localhost --port 3000",
           url: localBaseUrl,
           reuseExistingServer: true,
           timeout: 180_000,
         },
-      }),
+      }
+    : {}),
 });

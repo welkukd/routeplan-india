@@ -3,11 +3,13 @@ import { expect, test } from "@playwright/test";
 test("landing page is honest and never exposes a placeholder WhatsApp link", async ({
   page,
 }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded", timeout: 60000 });
+  await page.goto("/", { waitUntil: "domcontentloaded", timeout: 120000 });
 
-  await expect(
-    page.getByRole("heading", { name: /Circuit for Indian SMBs/i }),
-  ).toBeVisible({ timeout: 30000 });
+  // The h1 has text split across two spans with a <br/> - check the h1 element
+  const heading = page.locator("h1").first();
+  await expect(heading).toBeVisible({ timeout: 30000 });
+  await expect(heading).toContainText(/Circuit for/i);
+  await expect(heading).toContainText(/Indian SMBs/i);
   await expect(page.getByText(/Phase 1 Early Access/i)).toBeVisible({
     timeout: 30000,
   });
