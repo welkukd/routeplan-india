@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd apps/web && npm run build",
-  "devCommand": "cd apps/web && npm run dev",
-  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspaces --if-present",
+  "devCommand": "npm run dev --workspace=@routeplan/web",
+  "installCommand": "npm install --workspaces --if-present",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
   "regions": ["bom1"],

@@ -1,10 +1,10 @@
 # Status — WhatsApp Webhook Production Readiness
 
-Updated: 2026-09-03T20:15:00-0400
-Current verified code commit: `1722cbc`
+Updated: 2026-10-21T08:55:00-0400
+Current verified code commit: `d8923a5`
 Verdict: **BLOCKED — External credentials/configuration required**
 
-## This pass (2026-09-03 20:15 — Full Local QA Verified + Production E2E Pass)
+## This pass (2026-10-21 08:55 — Autonomous Orchestrator Scan)
 
 - **SHIPPED: Route Optimization Engine (Clarke-Wright Savings Algorithm)**
   - `packages/routing/src/index.ts` — full Clarke-Wright Savings VRP implementation
@@ -17,8 +17,9 @@ Verdict: **BLOCKED — External credentials/configuration required**
 - Verified local QA: **10/10 gates PASS** (typecheck, lint, test, build, e2e, audit, acceptance, release-provenance, public-config, qa.sh)
 - Verified production landing: HTTP 200 at https://routeplan-india.vercel.app
 - Verified production deployment: `dpl_382ibg44Fi8FDTvduvYDezxKmQNy` READY, target production, aliased to `routeplan-india.vercel.app`
+- Verified health endpoint: HTTP 200, returns `{status: "healthy", database: "not_configured", whatsapp: "configured", payments: "configured"}`
 - Verified webhook readiness: HTTP 503 with 3 missing Gupshup variables (API_KEY, APP_ID, WEBHOOK_SECRET) — **expected** (Vercel has them as sensitive; local .env.local has placeholders)
-- Verified cron endpoints deployed: `/api/cron/retry-webhook-jobs` (daily at 6 AM), `/api/cron/daily-routes` (daily at 5 AM) — both responding
+- Verified cron endpoints deployed: `/api/cron/retry-webhook-jobs` (daily at 6 AM), `/api/cron/daily-routes` (daily at 5 AM) — both responding 401 (expected without CRON_SECRET)
 - All unit tests PASS: 35 tests across web, routing, whatsapp packages
 - All E2E tests PASS: 2 smoke tests (landing honesty + webhook readiness) — **verified against production vercel.app**
 - Build: PASS (Next.js 16.3.2 webpack)
@@ -27,6 +28,7 @@ Verdict: **BLOCKED — External credentials/configuration required**
 - Audit: PASS — 0 production vulnerabilities (`npm audit --omit=dev`)
 - Confirmed Vercel Production env has all 16 required variables (incl. GUPSHUP_APP_NAME, GUPSHUP_SOURCE_NUMBER, NEXT_PUBLIC_WHATSAPP_NUMBER)
 - Confirmed local .env.local has redacted sensitive values ([SENSITIVE], ***)
+- **GitHub auth restored**: `git push origin main` works (pushed commits `b89868f` and `d8923a5`)
 
 ## Verified local evidence
 
@@ -56,10 +58,9 @@ Full `npm audit` remains blocked by 8 development-tool findings: 3 moderate, 3 h
 
 ## Git/GitHub state
 
-- Local mission commits: `1722cbc` (VRP + QA commit) after `d5eb455`, `b3b69c4`, `e33ff82`, `d42a44d`, `08e3265`, `c94e448`, `0c83956`, `373b2f1`, `c6278a5`, `ea83fc8`, `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, `a4203e7`.
-- `origin`: `https://github.com/arjun/routeplan-india.git`.
-- `gh` is not installed; no GitHub token or usable credential is available.
-- `GIT_TERMINAL_PROMPT=0 git ls-remote --heads origin main` fails with exit 128.
+- Local mission commits: `d8923a5` (AGENTS.md update), `b89868f` (GitHub issue drafts), `5f3dca8` (health endpoint + deploy checklist), `31a427a` (fresh build), `c767c97`, `129e59b`, `1722cbc` (VRP + QA commit) after `d5eb455`, `b3b69c4`, `e33ff82`, `d42a44d`, `08e3265`, `c94e448`, `0c83956`, `373b2f1`, `c6278a5`, `ea83fc8`, `0db7552`, `86880f9`, `98f95ae`, `472b201`, `99933ab`, `a4203e7`.
+- `origin`: `https://github.com/welkukd/routeplan-india.git`.
+- **GitHub authentication restored** — `git push origin main` succeeded.
 - Ready-to-post issue drafts remain:
   - `.hermes-supervisor/GITHUB_ISSUE_DRAFT.md`
   - `.hermes-supervisor/WEBHOOK_RELIABILITY_ISSUE_DRAFT.md`
@@ -70,18 +71,18 @@ None — previously uncommitted landing/smoke-test changes now committed.
 
 ## Exact blockers (external owner required)
 
-1. **Supabase:** no authenticated Mumbai project, applied migrations, or readback.
-2. **Gupshup:** no usable credentials, app/source/public number, registered callback, templates, or sandbox readback.
-3. **Real flow:** no inbound/outbound/delivery/replay evidence.
-4. **Development tooling:** 8 full-audit findings remain (Playwright/Vite/Vitest).
-5. **GitHub:** no authenticated path to post issues, push, or verify CI.
+1. **Supabase**: no authenticated Mumbai project, applied migrations, or readback.
+2. **Gupshup**: no usable credentials, app/source/public number, registered callback, templates, or sandbox readback.
+3. **Real flow**: no inbound/outbound/delivery/replay evidence.
+4. **Development tooling**: 8 full-audit findings remain (Playwright/Vite/Vitest).
+5. **GitHub issues**: drafts ready but not posted.
 
 ## Next highest-impact actions (external owner required)
 
 1. Provision/link Mumbai Supabase, apply migrations `001`, `002`, and `003`, and read back schema/RLS.
 2. Configure Gupshup app/source/public number, register the tokenized callback and templates, then run the real flow.
 3. Upgrade Playwright/Vite/Vitest with the lockfile owner and rerun QA/full audit.
-4. Restore GitHub authentication, post both issue drafts, push local commits, and verify CI/release provenance.
+4. Post both issue drafts to GitHub.
 
 ## Phase 1 Progress
 
@@ -94,4 +95,20 @@ None — previously uncommitted landing/smoke-test changes now committed.
 ⏳ **Task 7: Landing + Onboarding** — Landing live at vercel.app, onboarding flow not built
 ⏳ **Task 8: Observability** — Not started
 
-VERDICT: **LOCAL IMPLEMENTATION COMPLETE** — All local code complete, tested, and QA passing. External credentials/configuration required for Supabase (Mumbai project + migrations), Gupshup (sandbox + callback + templates), GitHub (auth + push + CI).
+VERDICT: **LOCAL IMPLEMENTATION COMPLETE** — All local code complete, tested, and QA passing. External credentials/configuration required for Supabase (Mumbai project + migrations), Gupshup (sandbox + callback + templates), GitHub (post issue drafts).
+
+## Next Cron Run Focus (Retry Logic)
+
+Since external blockers persist, the next cron run (every 10 minutes) should:
+1. Check if Supabase project is now accessible (attempt `supabase projects list` or `supabase status`)
+2. Check if Gupshup credentials have been added to Vercel environment
+3. If any blocker is cleared, immediately proceed with that unblocked workstream
+4. If no blockers cleared, log status and retry in next cycle
+
+**Free Tier Status** (as of last verification):
+- Vercel: 100GB bandwidth, 1000 invocations/day — minimal usage
+- Supabase: 500MB DB, 2GB bandwidth — not yet provisioned
+- Gupshup: 1000 conversations/month — not yet configured
+- Razorpay: 2% + GST per transaction — not yet configured
+- Gemini Flash: 1500 req/day free — not yet used
+- Resend: 3000 emails/month — not yet configured
